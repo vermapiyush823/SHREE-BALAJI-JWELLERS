@@ -1,8 +1,11 @@
-.navbar-container {
+.main-nav-container {
   position: fixed;
   top: 0;
+  font-family: "Gilroy-Medium", sans-serif;
   left: 0;
   width: 100%;
+}
+.navbar-container {
   height: 72px;
   padding: 5px 70px;
   background-color: #f8f0e7;
@@ -17,4 +20,18 @@
   display: flex;
   gap: 30px;
   align-items: baseline;
+}
+.quick-links {
+  padding: 10px 70px;
+  border-bottom: 1px solid #e5e5e5;
+  background-color: #fff;
+}
+.quick-links ul {
+  display: flex;
+  gap: 31px;
+  align-items: center;
+}
+.quick-links ul li {
+  cursor: pointer;
+  font-size: 20px;
 }

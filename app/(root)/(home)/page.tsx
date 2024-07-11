@@ -1,8 +1,11 @@
+import Slider from "@/components/slider/slider";
+
 const Home = () => {
   return (
-    <main>
-      <h1>Welcome to the home page!</h1>
-    </main>
+    <div className="w-full">
+      <Slider />
+    </div>
   );
 };
+
 export default Home;

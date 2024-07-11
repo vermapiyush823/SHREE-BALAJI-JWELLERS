@@ -1,0 +1,16 @@
+.searchbar {
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  border-bottom: 1px solid #555555;
+  width: 350px;
+}
+.searchbar input {
+  background: none;
+  padding-bottom: 5px;
+}
+.searchbar input::placeholder {
+  color: #555555;
+  font-size: 22px;
+}

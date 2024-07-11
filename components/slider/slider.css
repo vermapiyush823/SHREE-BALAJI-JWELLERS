@@ -1,0 +1,17 @@
+.slider-img {
+  object-fit: cover;
+  width: 100%;
+}
+.prev,
+.next {
+  width: 50px;
+  height: 50px;
+  background-color: transparent;
+  border: 1px solid black;
+}
+.prev {
+  left: 10%;
+}
+.next {
+  right: 10%;
+}
