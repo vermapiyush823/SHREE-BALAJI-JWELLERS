@@ -3,14 +3,19 @@
   display: flex;
   justify-content: space-between;
   align-items: baseline;
+  font-family: "Gilroy-Regular", sans-serif;
   border-bottom: 1px solid #555555;
   width: 350px;
 }
 .searchbar input {
   background: none;
   padding-bottom: 5px;
+  font-size: 22px;
 }
 .searchbar input::placeholder {
   color: #555555;
-  font-size: 22px;
+}
+.searchbar input:focus {
+  border: none;
+  outline: none;
 }

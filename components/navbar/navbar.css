@@ -1,7 +1,6 @@
 .main-nav-container {
   position: fixed;
   top: 0;
-  font-family: "Gilroy-Medium", sans-serif;
   left: 0;
   width: 100%;
 }
@@ -23,7 +22,7 @@
 }
 .quick-links {
   padding: 10px 70px;
-  border-bottom: 1px solid #e5e5e5;
+  border-bottom: 2px solid #979797;
   background-color: #fff;
 }
 .quick-links ul {
@@ -34,4 +33,5 @@
 .quick-links ul li {
   cursor: pointer;
   font-size: 20px;
+  color: #555555;
 }
