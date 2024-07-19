@@ -63,10 +63,10 @@ const Slider = () => {
           </div>
         ))}
       </div>
-      <Button onClick={scrollPrev} className="prev">
+      <Button onClick={scrollPrev} className="prev navigator-icon-parent">
         <DoubleArrowLeftIcon className="navigator-icon" />
       </Button>
-      <Button onClick={scrollNext} className="next">
+      <Button onClick={scrollNext} className="next navigator-icon-parent">
         <DoubleArrowRightIcon className="navigator-icon" />
       </Button>
 
