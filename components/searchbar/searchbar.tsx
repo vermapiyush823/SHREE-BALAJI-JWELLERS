@@ -1,29 +1,17 @@
 import Image from "next/image";
-import deleteIcon from "../../assets/icons/Delete.svg";
-import searchIcon from "../../assets/icons/Search.svg";
+import SearchIcon from "../../assets/icons/Search.svg";
 import "./searchbar.css";
 const searchbar = () => {
   return (
-    <div className="searchbar">
-      <button title="Search">
-        <Image
-          src={searchIcon}
-          className="search"
-          alt="search"
-          width={24}
-          height={24}
-        />
+    <div className="flex w-[400px] shadow-sm rounded-[5px]">
+      <button className=" border-[1px] w-1/12 bg-white p-2 rounded-l-[5px] border-r-0">
+        <Image src={SearchIcon} alt="search" width={20} height={20} />
       </button>
-      <input type="text" placeholder="Search Items..." />
-      <button title="Delete">
-        <Image
-          src={deleteIcon}
-          alt="delete"
-          className="delete"
-          width={24}
-          height={24}
-        />
-      </button>
+      <input
+        type="text"
+        placeholder="Search for products"
+        className="p-2 border-[1px] w-11/12 border-l-0 rounded-r-[5px] focus:outline-none"
+      />
     </div>
   );
 };
