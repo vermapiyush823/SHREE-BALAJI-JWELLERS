@@ -1,13 +1,15 @@
-"use server";
-import BreadCrumbs from "@/components/breadcrumb/breadcrumbs";
+// "use server";
 import ProductCard from "@/components/card/product_card/product_card";
 import { getAllProducts } from "@/lib/actions/product.actions";
-const JewelleryPage = async () => {
-  const Products = await getAllProducts();
+const ProductContainer = () => {
+  const Products = getAllProducts();
   return (
     <>
-      <BreadCrumbs />
-      <div className="mx-auto w-[95%] flex-wrap gap-[20px] flex justify-start pl-8 p-6">
+      <div
+        className="mx-auto w-[95%]
+      flex-wrap gap-[20px]
+      flex justify-start pl-8 p-6"
+      >
         {Products.map((product) => (
           <ProductCard
             title={product.title}
@@ -27,5 +29,4 @@ const JewelleryPage = async () => {
     </>
   );
 };
-
-export default JewelleryPage;
+export default ProductContainer;
