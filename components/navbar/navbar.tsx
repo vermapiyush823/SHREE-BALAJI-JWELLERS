@@ -4,36 +4,11 @@ import heart from "../../assets/icons/Heart.svg";
 import logo from "../../assets/icons/logo.svg";
 import shoppinBag from "../../assets/icons/shopping bag.svg";
 import profile from "../../assets/icons/Union.svg";
+import { getNavbarDropdowns } from "../../lib/actions/navbar.actions";
 import Search from "../searchbar/searchbar";
 import "./navbar.css";
-const navbar = () => {
-  const quickLinks = [
-    {
-      title: "GOLD",
-      link: "gold",
-    },
-    {
-      title: "DIAMOND",
-      link: "diamond",
-    },
-    {
-      title: "SILVER",
-      link: "silver",
-    },
-    {
-      title: "PLATINUM",
-      link: "platinum",
-    },
-    {
-      title: "GEMSTONE",
-      link: "gemstone",
-    },
-    {
-      title: "RATE TODAY",
-      link: "rate-today",
-    },
-  ];
-  const dropDownLinks = ["Ring", "Necklace", "Tops", "Bracelet"];
+export default async function navbar() {
+  const quickLinks = await getNavbarDropdowns();
   return (
     <div className="main-nav-container shadow-lg">
       <div className="navbar-container bg-gray-100">
@@ -71,7 +46,7 @@ const navbar = () => {
       <div className="quick-links">
         <ul className="quick-links-list">
           {quickLinks.map((links) => (
-            <li className="quick-link relative" key={links.title}>
+            <li className="quick-link" key={links.title}>
               <Link
                 href={`${links.link}`}
                 as={`${links.link}`}
@@ -79,24 +54,56 @@ const navbar = () => {
               >
                 {links.title}
               </Link>
+              {links.title !== "RATE TODAY" ? (
+                <div className="dropdown mt-[1px] left-[10vw] shadow-lg">
+                  <ul className="flex flex-col shadow-lg">
+                    {links.subLinks.map((sublink: any) => (
+                      <li
+                        key={sublink.title}
+                        className="p-[8px] pl-[12px] hover:bg-gray-200"
+                      >
+                        <Link href={`/${links.link}/${sublink.link}`}>
+                          {sublink.title}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ) : (
+                <div className="rate-dropdown bg-gray-100 pt-0 shadow-lg">
+                  <h2 className="font-[gilroy-medium] p-2  text-black bg-gray-200">
+                    Today's Rate
+                  </h2>
+                  <p className="font-[gilroy-light] border-b-[1px] border-black p-1 pl-2 text-[18px] text-black">
+                    <span className="font-[gilroy-medium] text-black">
+                      Gold:
+                    </span>{" "}
+                    10gms - 24K - 999
+                  </p>
+                  <p className="font-[gilroy-light] border-b-[1px] border-black p-1 pl-2 text-[18px] text-black">
+                    <span className="font-[gilroy-medium] text-black">
+                      Silver:
+                    </span>{" "}
+                    10gms - 999
+                  </p>
+                  <p className="font-[gilroy-light] border-b-[1px] border-black p-1 pl-2 text-[18px] text-black">
+                    <span className="font-[gilroy-medium] text-black">
+                      Platinum:
+                    </span>{" "}
+                    10gms - 999
+                  </p>
+                  <p className="font-[gilroy-light] border-b-[1px]  p-1 pl-2 text-[18px] text-black">
+                    <span className="font-[gilroy-medium] text-black">
+                      Diamond:
+                    </span>{" "}
+                    1ct - VVS1
+                  </p>
+                </div>
+              )}
             </li>
           ))}
         </ul>
-        <div className="dropdown">
-          <ul className="dropdown-list shadow-lg">
-            {dropDownLinks.map((links) => (
-              <li
-                className="hover:bg-gray-200 cursor-pointer p-[10px] pl-[12px]"
-                key={links}
-              >
-                {links}
-              </li>
-            ))}
-          </ul>
-        </div>
       </div>
     </div>
   );
-};
-
-export default navbar;
+}

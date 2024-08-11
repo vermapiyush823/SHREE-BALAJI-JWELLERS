@@ -1,18 +1,23 @@
 "use client";
 import BreadCrumbs from "@/components/breadcrumb/breadcrumbs";
-import { usePathname } from "next/navigation";
+import ProductCard from "@/components/card/[product_card]/product_card";
+import { useParams } from "next/navigation";
 const JewelleryPage = () => {
-  const paths = usePathname();
-  const pathNames = paths.split("/").filter((path) => path);
-  const breadCrumbs = pathNames.map((path, index) => {
-    return {
-      name: path,
-      url: `/${pathNames.slice(0, index + 1).join("/")}`,
-    };
-  });
+  const { jwellery_type } = useParams();
   return (
     <>
-      <BreadCrumbs arrLinks={breadCrumbs} />
+      <div className="w-full flex justify-center">
+        <h1 className="text-[50px] font-bold capitalize text-center text-gray-800">
+          {jwellery_type} Jewellery
+        </h1>
+      </div>
+      <BreadCrumbs />
+      <div className="mx-auto w-[95%] flex justify-between p-6">
+        <ProductCard />
+        <ProductCard />
+        <ProductCard />
+        <ProductCard />
+      </div>
     </>
   );
 };

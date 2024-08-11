@@ -1,12 +1,21 @@
-interface BreadCrumbsProps {
-  arrLinks: Array<{ name: string; url: string }>;
-}
+"use client";
+
 import ArrowIcon from "@/assets/icons/Forward.svg";
 import Image from "next/image";
 import Link from "next/link";
-const BreadCrumbs = (BreadCrumbsProps: any) => {
+import { usePathname } from "next/navigation";
+
+const BreadCrumbs = () => {
+  const paths = usePathname();
+  const pathNames = paths.split("/").filter((path) => path);
+  const arrLinks = pathNames.map((path, index) => {
+    return {
+      name: path,
+      url: `/${pathNames.slice(0, index + 1).join("/")}`,
+    };
+  });
   return (
-    <div className="breadcrumbs p-2 inline-block ml-1 mt-1">
+    <div className="breadcrumbs p-2 inline-block ml-[25px] mt-1">
       <ul className="flex gap-1">
         <li>
           <Link
@@ -23,12 +32,12 @@ const BreadCrumbs = (BreadCrumbsProps: any) => {
             />
           </Link>
         </li>
-        {BreadCrumbsProps.arrLinks.map((link: any, index: any) => (
+        {arrLinks.map((link: any, index: any) => (
           <li key={index}>
-            {index !== BreadCrumbsProps.arrLinks.length - 1 ? (
+            {index !== arrLinks.length - 1 ? (
               <Link
                 href={link.url}
-                className="text-xl hover:font-semibold hover:underline"
+                className="text-xl hover:font-semibold hover:underline capitalize"
                 as={link.url}
               >
                 {link.name}
@@ -41,7 +50,9 @@ const BreadCrumbs = (BreadCrumbsProps: any) => {
                 />
               </Link>
             ) : (
-              <span className="text-xl font-semibold">{link.name}</span>
+              <span className="text-xl font-semibold cursor-default capitalize">
+                {link.name}
+              </span>
             )}
           </li>
         ))}

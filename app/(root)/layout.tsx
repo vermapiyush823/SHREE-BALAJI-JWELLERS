@@ -1,6 +1,10 @@
 import Footer from "../../components/footer/footer";
 import Navbar from "../../components/navbar/navbar";
-export default function Layout({ children }: { children: React.ReactNode }) {
+export default async function Layout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <main>
       <Navbar />
