@@ -47,13 +47,19 @@ export default async function navbar() {
         <ul className="quick-links-list">
           {quickLinks.map((links) => (
             <li className="quick-link" key={links.title}>
-              <Link
-                href={`${links.link}`}
-                as={`${links.link}`}
-                className="font-[gilroy-medium]"
-              >
-                {links.title}
-              </Link>
+              {links.title !== "RATE TODAY" ? (
+                <Link
+                  href={{
+                    pathname: `/product`,
+                    query: { type: links.link },
+                  }}
+                  className="font-[gilroy-medium]"
+                >
+                  {links.title}
+                </Link>
+              ) : (
+                <span className="font-[gilroy-medium]">{links.title}</span>
+              )}
               {links.title !== "RATE TODAY" ? (
                 <div className="dropdown mt-[1px] left-[10vw] shadow-lg">
                   <ul className="flex flex-col shadow-lg">
@@ -62,7 +68,12 @@ export default async function navbar() {
                         key={sublink.title}
                         className="p-[8px] pl-[12px] hover:bg-gray-200"
                       >
-                        <Link href={`/${links.link}/${sublink.link}`}>
+                        <Link
+                          href={{
+                            pathname: `/product`,
+                            query: { type: links.link, subType: sublink.link },
+                          }}
+                        >
                           {sublink.title}
                         </Link>
                       </li>

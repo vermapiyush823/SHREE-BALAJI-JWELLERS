@@ -1,10 +1,34 @@
 "use client";
-import { useParams } from "next/navigation";
+import Image from "next/image";
+import { useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import Gemstone from "../../assets/images/Gemstone.jpg";
+import Diamond from "../../assets/images/diamond-jwellery.jpg";
+import GoldBanner from "../../assets/images/gold-jewellery.jpg";
+import PlatinumBanner from "../../assets/images/platinum.jpg";
 const PageHeading = () => {
-  const { jwellery_type } = useParams();
+  const searchParams = useSearchParams();
+  const jwellery_type = searchParams.get("type");
+  const [jwellery_image, setJwelleryImage] = useState(GoldBanner);
+  useEffect(() => {
+    if (jwellery_type === "diamond") {
+      setJwelleryImage(Diamond);
+    } else if (jwellery_type === "gemstone") {
+      setJwelleryImage(Gemstone);
+    } else if (jwellery_type === "platinum") {
+      setJwelleryImage(PlatinumBanner);
+    }
+  });
   return (
-    <div className="w-full flex justify-center">
-      <h1 className="text-[50px] font-bold capitalize text-center text-gray-800">
+    <div className="w-full h-fit flex justify-center mt-[-4px] relative">
+      <Image
+        src={jwellery_image}
+        alt="Gold Banner"
+        width={1000}
+        height={500}
+        className="object-cover w-full h-[230px] "
+      />
+      <h1 className="text-[45px] ml-7 top-[35%] left-[45%] absolute font-[gilroy-light] capitalize text-gray-800">
         {jwellery_type} Jewellery
       </h1>
     </div>

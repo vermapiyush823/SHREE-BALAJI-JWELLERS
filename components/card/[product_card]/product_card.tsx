@@ -5,27 +5,22 @@ import { StarFilledIcon } from "@radix-ui/react-icons";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-interface Product {
-  _id: string;
-  title: string;
-  price: number;
-  image: string;
-  type: string;
-  subType: string;
-  weight: number;
-  purity: number;
-  review: number;
-  rating: number;
+interface ProductProps {
+  product: {
+    title: string;
+    price: number;
+    image: string;
+    type: string;
+    subType: string;
+    weight: number;
+    purity: number;
+    review: number;
+    rating: number;
+    _id: string;
+  };
 }
-const ProductCard = (product: Product) => {
-  // const product = {
-  //   name: "Diamond Ring",
-  //   price: "1,00,000",
-  //   image:
-  //     "https://static.malabargoldanddiamonds.com/media/catalog/product/cache/1/thumbnail/433x/0dc2d03fe217f8c83829496872af24a0/f/r/frpdgen22369.jpg",
-  //   review: 5000,
-  //   id: 1,
-  // };
+const ProductCard = (productProps: ProductProps) => {
+  const [rating, setRating] = useState(productProps.product.rating);
   const [isWishlisted, setWishlisted] = useState(false);
   return (
     <div
@@ -45,29 +40,36 @@ const ProductCard = (product: Product) => {
         )}
       </button>
       <Link
-        href={`/product/${product._id}`}
-        as={`/product/${product.title.replace(/ /g, "-")}`}
+        href={`/product/${productProps.product._id}`}
+        as={`/product/${productProps.product.title.replace(/ /g, "-")}`}
       >
         <Image
-          src={product.image}
-          alt={product.title}
+          src={productProps.product.image}
+          alt={productProps.product.title}
           width={200}
           height={100}
           className="w-[300px] object-cover overflow-hidden hover:scale-95 transition-transform duration-500 ease-in-out"
         />
 
         <div className="flex flex-col  gap-1 p-2 mx-auto w-[95%] border-t border-black ">
-          <h2 className="text-[18px]  text-gray-800">{product.title}</h2>
+          <h2 className="text-[17px] w-full overflow-hidden text-ellipsis text-nowrap  text-gray-800">
+            {productProps.product.title}
+          </h2>
           <p className=" font-[gilroy-medium] text-gray-800 font-bold text-[16px] ">
-            ₹{product.price}/-
+            ₹{productProps.product.price}/-
           </p>
           <div className="flex mt-1 items-center gap-2">
-            <StarFilledIcon className="text-yellow-500 scale-150" />
-            <StarFilledIcon className="text-yellow-500 scale-150" />
-            <StarFilledIcon className="text-yellow-500 scale-150" />
-            <StarFilledIcon className="text-yellow-500 scale-150" />
-            <StarFilledIcon className="text-yellow-500 scale-150" />
-            <p className="text-gray-500">({product.review} Reviews)</p>
+            {Array.from({ length: 5 }, (_, i) => i + 1).map((star) => (
+              <StarFilledIcon
+                key={star}
+                className={`w-5 h-5 text-yellow-500 ${
+                  star <= rating ? "text-yellow-500" : "text-gray-300"
+                }`}
+              />
+            ))}
+            <p className="text-gray-500">
+              ({productProps.product.review} Reviews)
+            </p>
           </div>
         </div>
       </Link>

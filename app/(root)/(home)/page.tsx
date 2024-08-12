@@ -48,12 +48,12 @@ const Home = () => {
     <div className="w-full">
       <Slider />
       <Container
-        heading="Gold Jewellery"
+        heading="Gold Collections"
         subHeading="Discover the beauty of diamond with our timeless diamond collection"
         imgArray={GoldimgArr}
       />
       <Container
-        heading="Diamond Jewellery"
+        heading="Diamond Collections"
         subHeading="Discover our latest jewellery collection!"
         imgArray={DiamondimgArr}
       />

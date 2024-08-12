@@ -3,17 +3,22 @@
 import ArrowIcon from "@/assets/icons/Forward.svg";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-
+import { useSearchParams } from "next/navigation";
 const BreadCrumbs = () => {
-  const paths = usePathname();
-  const pathNames = paths.split("/").filter((path) => path);
+  const params = useSearchParams();
+  const jwellery_type = params.get("type");
+  const jwellery_sub_type = params.get("subType");
+  const pathNames = [jwellery_type];
+  if (jwellery_sub_type) {
+    pathNames.push(jwellery_sub_type);
+  }
   const arrLinks = pathNames.map((path, index) => {
     return {
       name: path,
-      url: `/${pathNames.slice(0, index + 1).join("/")}`,
+      url: `/product?type=${pathNames.slice(0, index + 1).join("/")}`,
     };
   });
+  console.log(arrLinks);
   return (
     <div className="breadcrumbs p-2 inline-block ml-[25px] mt-1">
       <ul className="flex gap-1">
