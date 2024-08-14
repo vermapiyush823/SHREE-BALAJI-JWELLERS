@@ -3,22 +3,29 @@
 import ArrowIcon from "@/assets/icons/Forward.svg";
 import Image from "next/image";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 const BreadCrumbs = () => {
-  const params = useSearchParams();
-  const jwellery_type = params.get("type");
-  const jwellery_sub_type = params.get("subType");
-  const pathNames = [jwellery_type];
-  if (jwellery_sub_type) {
-    pathNames.push(jwellery_sub_type);
+  const params = useParams();
+  const searchParams = useSearchParams();
+  const jwellery_type = params.product;
+  const jwellery_subtype = searchParams.get("subType");
+  const pathNames: any = [];
+  if (jwellery_type) {
+    pathNames.push(jwellery_type);
   }
-  const arrLinks = pathNames.map((path, index) => {
+  if (jwellery_subtype) {
+    pathNames.push(jwellery_subtype);
+  }
+  const id = useParams().id;
+  if (id) {
+    pathNames.push(id.toString().replace(/-/g, " "));
+  }
+  const arrLinks = pathNames.map((path: String, index: number) => {
     return {
       name: path,
-      url: `/product?type=${pathNames.slice(0, index + 1).join("/")}`,
+      url: `/product/${pathNames.slice(0, index + 1).join("/")}`,
     };
   });
-  console.log(arrLinks);
   return (
     <div className="breadcrumbs p-2 inline-block ml-[25px] mt-1">
       <ul className="flex gap-1">

@@ -12,7 +12,6 @@ import { useCallback, useEffect, useState } from "react";
 import img2 from "../../assets/images/Ashada-web-06072024.jpg";
 import img1 from "../../assets/images/Gold-chain-banner-web1.jpg";
 import img3 from "../../assets/images/Kasu-collection-Web_24062024.jpg";
-import { Button } from "../ui/button";
 import "./slider.css";
 
 const Slider = () => {
@@ -63,12 +62,20 @@ const Slider = () => {
           </div>
         ))}
       </div>
-      <Button onClick={scrollPrev} className="prev navigator-icon-parent">
+      <button
+        title="prev"
+        onClick={scrollPrev}
+        className="prev navigator-icon-parent"
+      >
         <DoubleArrowLeftIcon className="navigator-icon" />
-      </Button>
-      <Button onClick={scrollNext} className="next navigator-icon-parent">
+      </button>
+      <button
+        title="next"
+        onClick={scrollNext}
+        className="next navigator-icon-parent"
+      >
         <DoubleArrowRightIcon className="navigator-icon" />
-      </Button>
+      </button>
 
       <div className="embla__dots">
         {scrollSnaps.map((_, index) => (

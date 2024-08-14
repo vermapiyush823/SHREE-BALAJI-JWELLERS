@@ -50,8 +50,7 @@ export default async function navbar() {
               {links.title !== "RATE TODAY" ? (
                 <Link
                   href={{
-                    pathname: `/product`,
-                    query: { type: links.link },
+                    pathname: `/${links.link}`,
                   }}
                   className="font-[gilroy-medium]"
                 >
@@ -70,8 +69,8 @@ export default async function navbar() {
                       >
                         <Link
                           href={{
-                            pathname: `/product`,
-                            query: { type: links.link, subType: sublink.link },
+                            pathname: `/${links.link}`,
+                            query: { subType: sublink.link },
                           }}
                         >
                           {sublink.title}

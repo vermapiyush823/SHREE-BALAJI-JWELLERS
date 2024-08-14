@@ -28,7 +28,7 @@ const PageHeading = () => {
         height={500}
         className="object-cover w-full h-[230px] "
       />
-      <h1 className="text-[45px] ml-7 top-[35%] left-[45%] absolute font-[gilroy-light] capitalize text-gray-800">
+      <h1 className="text-[45px] ml-7 top-[35%] left-[45%] absolute font-[gilroy-light] capitalize text-gray-500">
         {jwellery_type} Jewellery
       </h1>
     </div>
