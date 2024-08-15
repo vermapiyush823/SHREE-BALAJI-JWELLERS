@@ -1,14 +1,14 @@
 "use client";
 import Image from "next/image";
-import { useSearchParams } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import Gemstone from "../../assets/images/Gemstone.jpg";
 import Diamond from "../../assets/images/diamond-jwellery.jpg";
 import GoldBanner from "../../assets/images/gold-jewellery.jpg";
 import PlatinumBanner from "../../assets/images/platinum.jpg";
 const PageHeading = () => {
-  const searchParams = useSearchParams();
-  const jwellery_type = searchParams.get("type");
+  const { product } = useParams();
+  const jwellery_type = product;
   const [jwellery_image, setJwelleryImage] = useState(GoldBanner);
   useEffect(() => {
     if (jwellery_type === "diamond") {

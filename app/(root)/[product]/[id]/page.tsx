@@ -1,7 +1,7 @@
 "use server";
 import BreadCrumbs from "@/components/breadcrumb/breadcrumbs";
+import ProductDisplay from "@/components/container/productDisplay/productDisplay";
 import { getProductById } from "@/lib/actions/product.actions";
-
 interface ProductPageProps {
   params: {
     product: string;
@@ -12,18 +12,12 @@ interface ProductPageProps {
 const ProductPage = async ({ params }: ProductPageProps) => {
   const { id } = params;
   const product = await getProductById(id);
+  console.log(product);
+
   return (
     <>
       <BreadCrumbs />
-      <div className="product-display-container flex justify-around">
-        <div className="product-image">
-          <img src={product.image} alt={product.title} />
-        </div>
-        <div className="product-details">
-          <h1>{product.title}</h1>
-          <p>{product.price}</p>
-        </div>
-      </div>
+      <ProductDisplay product={product} />
     </>
   );
 };

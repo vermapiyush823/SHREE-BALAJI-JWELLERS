@@ -65,7 +65,7 @@ export default async function navbar() {
                     {links.subLinks.map((sublink: any) => (
                       <li
                         key={sublink.title}
-                        className="p-[8px] pl-[12px] hover:bg-gray-200"
+                        className="p-[8px] pl-[12px] font-[gilroy-light] hover:bg-gray-200"
                       >
                         <Link
                           href={{

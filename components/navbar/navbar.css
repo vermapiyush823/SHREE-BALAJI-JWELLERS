@@ -39,6 +39,11 @@
 }
 .quick-link{
   padding: 5px 0;
+  transition: all 0.2s ease-in;
+}
+.quick-link:hover{
+  border-bottom: 2px solid #555555;
+  font-weight: 600;
 }
 .dropdown{
   display: none;
@@ -68,7 +73,6 @@
 
 .dropdown ul li:hover{
   cursor: pointer;
-
 }
 .quick-link:hover .dropdown, .quick-link:hover .rate-dropdown {
   display: block;
@@ -79,7 +83,7 @@
   position: absolute;
   width: 250px;
   top: 100%;
-;
+
 }
 
 
