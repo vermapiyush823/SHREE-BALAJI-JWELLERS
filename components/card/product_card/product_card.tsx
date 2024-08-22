@@ -16,7 +16,7 @@ interface ProductProps {
     subType: string;
     weight: number;
     purity: number;
-    review: number;
+    noOfReview: number;
     rating: number;
     _id: string;
   };
@@ -44,7 +44,7 @@ const ProductCard = (productProps: ProductProps) => {
       </button>
       <Link href={`/${productProps.product.type}/${productProps.product._id}`}>
         <Image
-          src={productProps.product.image}
+          src={productProps.product.image[0]}
           alt={productProps.product.title}
           width={200}
           height={100}
@@ -94,7 +94,7 @@ const ProductCard = (productProps: ProductProps) => {
             })}
 
             <p className="text-gray-500">
-              ({productProps.product.review} Reviews)
+              ({productProps.product.noOfReview} Reviews)
             </p>
           </div>
         </div>

@@ -1,9 +1,13 @@
 "use client";
 import Heart from "@/assets/icons/Heart.svg";
 import HeartFilled from "@/assets/icons/HeartFilled.svg";
+import StarEmpty from "@/assets/icons/StarEmpty.svg";
+import StarFilled from "@/assets/icons/StarFilled.svg";
+import StarHalfFilled from "@/assets/icons/StarHalf.svg";
 import BISLogo from "@/assets/images/BIS.png";
 import Image from "next/image";
 import { useState } from "react";
+
 interface ProductDisplayProps {
   product: {
     title: string;
@@ -13,7 +17,7 @@ interface ProductDisplayProps {
     subType: string;
     weight: number;
     purity: number;
-    review: number;
+    noOfReview: number;
     rating: number;
     _id: string;
     stone: boolean;
@@ -23,8 +27,14 @@ interface ProductDisplayProps {
     stonePrice: number;
     gender: string;
     stoneQuantity: number;
+    reviews: Array<{
+      userID: string;
+      userRating: number;
+      comment: string;
+    }>;
   };
 }
+
 const ProductDisplay = ({ product }: ProductDisplayProps) => {
   const [imageLink, setImageLink] = useState(product.image[0]);
   const [isWishlisted, setWishlisted] = useState(false);
@@ -193,7 +203,7 @@ const ProductDisplay = ({ product }: ProductDisplayProps) => {
         <h1 className="text-2xl text-center text-gray-800 font-bold">
           Product Details
         </h1>
-        <div className="flex gap-x-[100px] bg-gray-300 mt-4 p-4 ">
+        <div className="flex gap-x-[100px] rounded-xl bg-gray-300 mt-4 p-4 ">
           <div className="flex flex-col w-[15%]">
             <h1 className="text-lg capitalize text-gray-700  font-bold ">
               {product.type} Details
@@ -251,6 +261,76 @@ const ProductDisplay = ({ product }: ProductDisplayProps) => {
                 </p>
               </div>
             </div>
+          )}
+        </div>
+      </div>
+      <div className="product-reviews w-[100%] mt-4">
+        <h1 className="text-2xl text-center text-gray-800 font-bold">
+          Reviews
+        </h1>
+        <div className="flex flex-row">
+          {product.reviews.length > 0 ? (
+            product.reviews.map((review, index) => (
+              <div key={index} className="flex flex-col  w-full mt-4">
+                <div className="flex w-full flex-wrap p-2 border-b-[2px]">
+                  <Image
+                    src={BISLogo}
+                    alt="BISLogo"
+                    width={20}
+                    height={20}
+                    className="rounded-full border-[2px] border-black h-[30px] w-[30px] "
+                  />
+                  <h1 className="text-lg ml-2 self-center text-gray-900 font-bold">
+                    {product.reviews[index].userID}{" "}
+                  </h1>
+                  <div className="flex ml-auto items-center gap-1">
+                    {Array.from({ length: 5 }, (_, i) => i + 1).map((star) => {
+                      if (product.reviews[index].userRating >= star) {
+                        return (
+                          <Image
+                            key={star}
+                            src={StarFilled}
+                            alt="Star"
+                            width={22}
+                            height={22}
+                          />
+                        );
+                      } else if (product.reviews[index].userRating > star - 1) {
+                        return (
+                          <Image
+                            key={star}
+                            src={StarHalfFilled}
+                            alt="Star"
+                            width={22}
+                            height={22}
+                          />
+                        );
+                      } else {
+                        return (
+                          <Image
+                            key={star}
+                            src={StarEmpty}
+                            alt="Star"
+                            width={22}
+                            height={22}
+                          />
+                        );
+                      }
+                    })}
+                    <p className="text-md  text-gray-700 font-bold">
+                      ({product.reviews[index].userRating}/5)
+                    </p>
+                  </div>
+                  <p className="text-md text-gray-700 block w-full ml-10">
+                    {product.reviews[index].comment}
+                  </p>
+                </div>
+              </div>
+            ))
+          ) : (
+            <p className="text-center text-xl text-gray-700 font-bold">
+              No reviews available
+            </p>
           )}
         </div>
       </div>

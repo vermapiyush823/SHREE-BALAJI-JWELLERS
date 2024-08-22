@@ -8,7 +8,7 @@ export interface ProductModel extends Document {
   subType: string;
   weight: number;
   purity?: number;
-  review: number;
+  noOfReview: number;
   rating: number;
   stone?: boolean;
   stoneWeight?: number;
@@ -17,6 +17,7 @@ export interface ProductModel extends Document {
   stonePrice?: number;
   gender: string;
   stoneQuantity?: number;
+  reviews: Array<object>;
 }
 const ProductSchema = new Schema({
   title: { type: String, required: true },
@@ -26,7 +27,7 @@ const ProductSchema = new Schema({
   subType: { type: String, required: true },
   weight: { type: Number, required: true },
   purity: { type: Number, required: false },
-  review: { type: Number, required: false, default: 0 },
+  noOfReview: { type: Number, required: false, default: 0 },
   rating: { type: Number, required: false, default: 0 },
   stone: { type: Boolean, required: false, default: false },
   stoneWeight: { type: Number, required: false },
@@ -35,6 +36,7 @@ const ProductSchema = new Schema({
   stonePrice: { type: Number, required: false },
   stoneQuantity: { type: Number, required: false },
   gender: { type: String, required: true },
+  reviews: { type: Array, required: false },
 });
 
 const Product = models.Product || model("Product", ProductSchema);

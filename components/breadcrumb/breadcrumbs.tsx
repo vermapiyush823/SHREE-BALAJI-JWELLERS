@@ -23,7 +23,7 @@ const BreadCrumbs = () => {
   const arrLinks = pathNames.map((path: String, index: number) => {
     return {
       name: path,
-      url: `/product/${pathNames.slice(0, index + 1).join("/")}`,
+      url: `/${pathNames.slice(0, index + 1).join("/")}`,
     };
   });
   return (

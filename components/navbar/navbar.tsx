@@ -8,6 +8,7 @@ import { getNavbarDropdowns } from "../../lib/actions/navbar.actions";
 import Search from "../searchbar/searchbar";
 import "./navbar.css";
 export default async function navbar() {
+  const userId = "1";
   const quickLinks = await getNavbarDropdowns();
   return (
     <div className="main-nav-container shadow-lg">
@@ -26,14 +27,16 @@ export default async function navbar() {
               </Link>
             </li>
             <li>
-              <Link href="/cart">
-                <Image
-                  src={shoppinBag}
-                  alt="shopping bag"
-                  width={25}
-                  height={25}
-                />
-              </Link>
+              {
+                <Link href={`${userId === "1" ? "/sign-in" : "/cart"}`}>
+                  <Image
+                    src={shoppinBag}
+                    alt="shopping bag"
+                    width={25}
+                    height={25}
+                  />
+                </Link>
+              }
             </li>
             <li>
               <Link href="/profile">
