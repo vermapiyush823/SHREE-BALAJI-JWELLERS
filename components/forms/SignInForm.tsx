@@ -68,7 +68,7 @@ export default function SignInForm() {
         </button>
       </form>
       <div className="flex gap-2 ">
-        <p className="text-gray-600">Don't have an account?</p>
+        <p className="text-gray-600">Don&apos;t have an account?</p>
         <Link
           href="/sign-up"
           className="text-gray-700 font-semibold hover:text-gray-800"
