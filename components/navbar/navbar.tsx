@@ -85,7 +85,7 @@ export default async function navbar() {
               ) : (
                 <div className="rate-dropdown bg-gray-100 pt-0 shadow-lg">
                   <h2 className="font-[gilroy-medium] p-2  text-black bg-gray-200">
-                    Today's Rate
+                    Today&apos;s Rate
                   </h2>
                   <p className="font-[gilroy-light] border-b-[1px] border-black p-1 pl-2 text-[18px] text-black">
                     <span className="font-[gilroy-medium] text-black">
