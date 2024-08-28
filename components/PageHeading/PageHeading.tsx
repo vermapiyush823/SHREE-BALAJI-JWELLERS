@@ -18,7 +18,7 @@ const PageHeading = () => {
     } else if (jwellery_type === "platinum") {
       setJwelleryImage(PlatinumBanner);
     }
-  });
+  }, []);
   return (
     <div className="w-full h-fit flex justify-center mt-[-4px] relative">
       <Image
