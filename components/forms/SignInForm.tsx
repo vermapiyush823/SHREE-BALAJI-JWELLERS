@@ -18,7 +18,7 @@ export default function SignInForm() {
           >
             Email
           </label>
-          <div className="flex gap-1 items-center">
+          <div className="flex gap-1 items-center w-[100%]">
             <Mail size={16} className="text-gray-500" />
             <input
               type="email"
@@ -27,7 +27,8 @@ export default function SignInForm() {
               placeholder="username@xyz.com"
               required
               className="
-              outline-none text-lg
+              w-[100%]
+              outline-none text-lg 
               text-gray-500
               "
             />
@@ -53,7 +54,7 @@ export default function SignInForm() {
               placeholder=".........."
               required
               className="
-              outline-none text-lg
+              outline-none text-lg w-[100%]
               text-gray-500
               placeholder:text-[30px]
               "

@@ -1,3 +1,4 @@
+import { getAuthToken } from "@/lib/getAuthToken";
 import Image from "next/image";
 import Link from "next/link";
 import heart from "../../assets/icons/Heart.svg";
@@ -8,7 +9,7 @@ import { getNavbarDropdowns } from "../../lib/actions/navbar.actions";
 import Search from "../searchbar/searchbar";
 import "./navbar.css";
 export default async function navbar() {
-  const userId = "1";
+  const user = await getAuthToken();
   const quickLinks = await getNavbarDropdowns();
   return (
     <div className="main-nav-container shadow-lg">
@@ -28,7 +29,7 @@ export default async function navbar() {
             </li>
             <li>
               {
-                <Link href={`${userId === "1" ? "/sign-in" : "/cart"}`}>
+                <Link href={`${user === null ? "/sign-in" : "/cart"}`}>
                   <Image
                     src={shoppinBag}
                     alt="shopping bag"
