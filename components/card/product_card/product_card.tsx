@@ -8,6 +8,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 interface ProductProps {
+  user: any;
   product: {
     title: string;
     price: number;
@@ -31,17 +32,33 @@ const ProductCard = (productProps: ProductProps) => {
     transition-shadow duration-500 ease-in-out cursor-pointer
     "
     >
-      <button
-        title="Add to Wishlist"
-        className="flex absolute justify-end items-center top-4 z-[100] right-4"
-        onClick={() => setWishlisted(!isWishlisted)}
-      >
-        {isWishlisted ? (
-          <Image src={HeartFilled} alt="HeartFilled" width={30} height={30} />
-        ) : (
-          <Image src={Heart} alt="Heart" width={30} height={30} />
-        )}
-      </button>
+      {!productProps.user ? (
+        <Link
+          className="
+        flex absolute justify-end items-center top-4 z-[100] right-4
+        "
+          href="/sign-in"
+        >
+          <Image
+            src={isWishlisted ? HeartFilled : Heart}
+            alt="Heart"
+            width={25}
+            height={25}
+          />
+        </Link>
+      ) : (
+        <button
+          title="Add to Wishlist"
+          className="flex absolute justify-end items-center top-4 z-[100] right-4"
+          onClick={() => setWishlisted(!isWishlisted)}
+        >
+          {isWishlisted ? (
+            <Image src={HeartFilled} alt="HeartFilled" width={30} height={30} />
+          ) : (
+            <Image src={Heart} alt="Heart" width={30} height={30} />
+          )}
+        </button>
+      )}
       <Link href={`/${productProps.product.type}/${productProps.product._id}`}>
         <Image
           src={productProps.product.image[0]}

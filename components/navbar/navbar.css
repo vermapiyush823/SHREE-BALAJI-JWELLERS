@@ -19,7 +19,7 @@
 .nav-icon-list {
   display: flex;
   gap: 30px;
-  align-items: baseline;
+  align-items: center;
 }
 .quick-links {
   width: 100vw;

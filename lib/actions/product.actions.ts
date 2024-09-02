@@ -12,5 +12,5 @@ export async function getAllProducts() {
 export async function getProductById(id: string) {
   await connectToDatabase();
   const product = await Product.findOne({ _id: id });
-  return product;
+  return JSON.parse(JSON.stringify(product));
 }

@@ -3,9 +3,11 @@ import User from "@/database/user.model";
 import bcrypt from "bcrypt";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import nodemailer from "nodemailer";
 import { z } from "zod";
 import { generateAuthToken } from "../generateAuthToken";
 import { connectToDatabase } from "../mongoose";
+
 const config = {
   maxAge: 60 * 60 * 24 * 7, // 1 week
   path: "/",
@@ -27,6 +29,15 @@ const schemaRegister = z.object({
     message: "Password must be between 6 and 100 characters",
   }),
 });
+const schemaLogin = z.object({
+  password: z.string().min(6).max(100, {
+    message: "Password must be between 6 and 100 characters",
+  }),
+  email: z.string().email({
+    message: "Please enter a valid email address",
+  }),
+});
+
 export async function registerUserAction(prevState: any, formData: FormData) {
   const validatedFields: any = schemaRegister.safeParse({
     email: formData.get("email"),
@@ -56,8 +67,7 @@ export async function registerUserAction(prevState: any, formData: FormData) {
     password: formData.get("password"),
   };
   const pass = user_details.password;
-  const salt = await bcrypt.genSalt(10);
-  const hashedPassword = await bcrypt.hash(pass ? pass.toString() : "", salt);
+  const hashedPassword = await bcrypt.hash(pass ? pass.toString() : "", 10);
 
   const newUser = new User({
     email: formData.get("email"),
@@ -73,11 +83,140 @@ export async function registerUserAction(prevState: any, formData: FormData) {
   redirect("/");
 }
 
-export async function OTPVerificationAction(formData: FormData) {
-  console.log("Hello From OTP Verification Action");
-  console.log(formData);
+export async function loginUserAction(prevState: any, formData: FormData) {
+  const validatedFields: any = schemaLogin.safeParse({
+    email: formData.get("email"),
+    password: formData.get("password"),
+  });
 
-  return {
-    data: formData,
+  if (!validatedFields.success) {
+    return {
+      ...prevState,
+      zodErrors: validatedFields.error.flatten().fieldErrors,
+    };
+  }
+
+  const user = await User.findOne({ email: validatedFields.data.email });
+  if (!user) {
+    return {
+      ...prevState,
+      message: "User not found",
+    };
+  }
+
+  const validPass = await bcrypt.compare(
+    validatedFields.data.password,
+    user.password
+  );
+  if (!validPass) {
+    return {
+      ...prevState,
+      message: "Invalid password",
+    };
+  }
+
+  cookies().set("jwt", generateAuthToken(user), config);
+  redirect("/");
+}
+
+export async function logoutUserAction() {
+  cookies().set("jwt", "", {
+    maxAge: 1,
+  });
+}
+
+var OTP = "";
+export async function sendEmail(email: string) {
+  const otp = Math.floor(100000 + Math.random() * 900000).toString();
+  OTP = otp;
+  var transporter = nodemailer.createTransport({
+    host: "smtp.gmail.com",
+    port: 465,
+    secure: true,
+    service: "gmail",
+    auth: {
+      user: "vermapiyush823@gmail.com",
+      pass: process.env.PASS,
+    },
+  });
+
+  var mailOptions: object = {
+    from: "vermapiyush@gmail.com",
+    to: email,
+    subject: "Your OTP Code",
+    html: `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <style>
+        body {
+          font-family: Arial, sans-serif;
+          background-color: #f4f4f4;
+          color: #333333;
+          margin: 0;
+          padding: 20px;
+        }
+        .container {
+          background-color: #ffffff;
+          max-width: 600px;
+          margin: 0 auto;
+          padding: 20px;
+          border-radius: 8px;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+          color: #4CAF50;
+        }
+        p {
+          font-size: 16px;
+        }
+        .otp {
+          font-size: 24px;
+          font-weight: bold;
+          background-color: #4CAF50;
+          color: #ffffff;
+          padding: 10px;
+          border-radius: 5px;
+          text-align: center;
+          letter-spacing: 5px;
+          margin: 20px 0;
+        }
+        .footer {
+          font-size: 14px;
+          color: #888888;
+          text-align: center;
+          margin-top: 20px;
+        }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <h1>Your OTP Code</h1>
+        <p>Hello,</p>
+        <p>Thank you for using our service. Please use the following OTP to complete your process:</p>
+        <div class="otp">${otp}</div>
+        <p>If you did not request this, please ignore this email.</p>
+        <p>Best regards,<br/>Shree Balaji Jwellers</p>
+      </div>
+      <div class="footer">
+        <p>&copy; ${new Date().getFullYear()} Shree Balaji Jwellers. All rights reserved.</p>
+      </div>
+    </body>
+    </html>
+    `,
+    // Send the HTML template as the email body
   };
+  transporter.sendMail(mailOptions, function (error, info) {
+    if (error) {
+      console.log(error);
+    } else {
+      console.log("Email sent: " + info.response);
+    }
+  });
+}
+
+export async function verifyOTP(otp: string) {
+  if (OTP === otp) {
+    console.log("verified");
+  }
 }

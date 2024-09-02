@@ -12,8 +12,6 @@ interface ProductPageProps {
 const ProductPage = async ({ params }: ProductPageProps) => {
   const { id } = params;
   const product = await getProductById(id);
-  console.log(product);
-
   return (
     <>
       <BreadCrumbs />

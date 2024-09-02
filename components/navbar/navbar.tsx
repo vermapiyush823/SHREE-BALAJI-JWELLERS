@@ -1,3 +1,4 @@
+import Login from "@/assets/icons/Login.svg";
 import { getAuthToken } from "@/lib/getAuthToken";
 import Image from "next/image";
 import Link from "next/link";
@@ -6,10 +7,12 @@ import logo from "../../assets/icons/logo.svg";
 import shoppinBag from "../../assets/icons/shopping bag.svg";
 import profile from "../../assets/icons/Union.svg";
 import { getNavbarDropdowns } from "../../lib/actions/navbar.actions";
+import LogoutButton from "../button/LogoutButton";
 import Search from "../searchbar/searchbar";
 import "./navbar.css";
 export default async function navbar() {
   const user = await getAuthToken();
+
   const quickLinks = await getNavbarDropdowns();
   return (
     <div className="main-nav-container shadow-lg">
@@ -29,7 +32,7 @@ export default async function navbar() {
             </li>
             <li>
               {
-                <Link href={`${user === null ? "/sign-in" : "/cart"}`}>
+                <Link href={`${!user ? "/sign-in" : "/cart"}`}>
                   <Image
                     src={shoppinBag}
                     alt="shopping bag"
@@ -43,6 +46,36 @@ export default async function navbar() {
               <Link href="/profile">
                 <Image src={profile} alt="profile" width={20} height={25} />
               </Link>
+            </li>
+            <li>
+              {!user ? (
+                <div className="flex items-center flex-col">
+                  <LogoutButton />
+                  <span
+                    className="text-sm
+                  text-gray-600
+                  "
+                  >
+                    Logout
+                  </span>
+                </div>
+              ) : (
+                <Link
+                  href="/sign-in"
+                  className="flex items-center flex-col
+                ml-2 mt-2
+                "
+                >
+                  <Image src={Login} alt="login" width={25} height={25} />
+                  <span
+                    className="text-sm
+                  text-gray-600
+                  "
+                  >
+                    Login
+                  </span>
+                </Link>
+              )}
             </li>
           </ul>
         </nav>

@@ -1,18 +1,20 @@
 "use client";
-
 import Logo from "@/assets/icons/logo.svg";
 import { registerUserAction } from "@/lib/actions/auth-actions";
 import { EyeClosedIcon, EyeOpenIcon } from "@radix-ui/react-icons";
 import { Mail, UserIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useFormState } from "react-dom";
+import SendOTPButton from "../button/SendOTPButton";
+import VerifyOTPButton from "../button/VerifyOTPButton";
 import { ZodErrors } from "../errors/zod";
 export default function SignUpForm() {
   //   const [otpVerified, setOtpVerified] = useState(false);
   //   const [otpSent, setOtpSent] = useState(false);
   const [passwordShow, setPasswordShow] = useState([false, false]);
+  const [otp, setOtp] = useState("");
   const INITIAL_STATE = {
     data: null,
   };
@@ -21,31 +23,37 @@ export default function SignUpForm() {
     INITIAL_STATE
   );
 
-  //   const inputRefs: any = useRef([]);
+  const inputRefs: any = useRef([]);
+  useEffect(() => {
+    inputRefs.current.forEach((input: any, index: any) => {
+      if (input) {
+        input.maxLength = 1;
 
-  //   useEffect(() => {
-  //     inputRefs.current.forEach((input: any, index: any) => {
-  //       if (input) {
-  //         input.maxLength = 1;
-  //         input.addEventListener("keyup", (e: any) => {
-  //           if (e.keyCode === 8 || e.keyCode === 37) {
-  //             if (index > 0) {
-  //               inputRefs.current[index - 1].focus();
-  //             }
-  //           } else if (
-  //             (e.keyCode >= 48 && e.keyCode <= 57) || // 0-9
-  //             (e.keyCode >= 65 && e.keyCode <= 90) || // A-Z
-  //             (e.keyCode >= 96 && e.keyCode <= 105) || // Numpad 0-9
-  //             e.keyCode === 39 // Right arrow
-  //           ) {
-  //             if (index < inputRefs.current.length - 1) {
-  //               inputRefs.current[index + 1].focus();
-  //             }
-  //           }
-  //         });
-  //       }
-  //     });
-  //   }, []);
+        const handleKeyUp = (e: any) => {
+          if (e.key === "Backspace" || e.key === "ArrowLeft") {
+            if (index > 0) {
+              inputRefs.current[index - 1].focus();
+            }
+          } else if (/[0-9A-Za-z]/.test(e.key) || e.key === "ArrowRight") {
+            if (index < inputRefs.current.length - 1) {
+              inputRefs.current[index + 1].focus();
+            }
+          }
+
+          const otpValue = inputRefs.current
+            .map((input: any) => input.value)
+            .join("");
+          setOtp(otpValue); // Update the OTP state
+        };
+
+        input.addEventListener("keyup", handleKeyUp);
+        // Cleanup the event listener on component unmount
+        return () => {
+          input.removeEventListener("keyup", handleKeyUp);
+        };
+      }
+    });
+  }, []);
 
   return (
     <div className="flex flex-col items-center justify-center bg-gray-200 py-10 w-fit rounded-[25px]">
@@ -73,6 +81,29 @@ export default function SignUpForm() {
           </div>
           <ZodErrors error={formState?.zodErrors?.email} />
         </div>
+        <div className="flex w-full justify-between align-middle">
+          <div className="flex gap-2">
+            {[...Array(6)].map((_, i) => (
+              <input
+                key={i}
+                aria-label={`digit-${i + 1}`}
+                type="text"
+                id={`digit-${i + 1}`}
+                name={`digit-${i + 1}`}
+                className="w-8 h-8 bg-gray-800 rounded-[3px] text-center text-white text-lg font-light"
+                placeholder="-"
+                ref={(el) => {
+                  inputRefs.current[i] = el;
+                }}
+              />
+            ))}
+          </div>
+          <div className="flex gap-2">
+            <SendOTPButton />
+            <VerifyOTPButton otp={otp} />
+          </div>
+        </div>
+
         <div className="flex flex-col bg-white w-[100%] gap-1 p-3 rounded-[15px]">
           <label
             htmlFor="username"
