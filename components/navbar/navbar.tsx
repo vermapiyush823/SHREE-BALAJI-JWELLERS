@@ -48,7 +48,7 @@ export default async function navbar() {
               </Link>
             </li>
             <li>
-              {!user ? (
+              {user ? (
                 <div className="flex items-center flex-col">
                   <LogoutButton />
                   <span

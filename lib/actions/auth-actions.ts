@@ -54,7 +54,13 @@ export async function registerUserAction(prevState: any, formData: FormData) {
     };
   }
   connectToDatabase();
-
+  const user = await User.findOne({ email: formData.get("email") });
+  if (user) {
+    return {
+      ...prevState,
+      mismatcherror: "User already exists",
+    };
+  }
   if (formData.get("password") !== formData.get("cnpassword")) {
     return {
       ...prevState,
@@ -66,6 +72,7 @@ export async function registerUserAction(prevState: any, formData: FormData) {
     name: formData.get("name"),
     password: formData.get("password"),
   };
+
   const pass = user_details.password;
   const hashedPassword = await bcrypt.hash(pass ? pass.toString() : "", 10);
 
@@ -126,10 +133,11 @@ export async function logoutUserAction() {
 }
 
 var OTP = "";
-export async function sendEmail(email: string) {
+export async function sendEmail(email: string): Promise<boolean> {
   const otp = Math.floor(100000 + Math.random() * 900000).toString();
-  OTP = otp;
-  var transporter = nodemailer.createTransport({
+  OTP = otp; // Make sure OTP is defined or managed correctly
+
+  const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
     port: 465,
     secure: true,
@@ -140,7 +148,7 @@ export async function sendEmail(email: string) {
     },
   });
 
-  var mailOptions: object = {
+  const mailOptions = {
     from: "vermapiyush@gmail.com",
     to: email,
     subject: "Your OTP Code",
@@ -204,19 +212,24 @@ export async function sendEmail(email: string) {
     </body>
     </html>
     `,
-    // Send the HTML template as the email body
   };
-  transporter.sendMail(mailOptions, function (error, info) {
-    if (error) {
-      console.log(error);
-    } else {
-      console.log("Email sent: " + info.response);
-    }
-  });
+
+  try {
+    const info = await transporter.sendMail(mailOptions);
+    console.log("Email sent: " + info.response);
+    return true;
+  } catch (error) {
+    console.error("Error sending email:", error);
+    return false;
+  }
 }
 
 export async function verifyOTP(otp: string) {
-  if (OTP === otp) {
-    console.log("verified");
+  console.log(OTP);
+  console.log(otp);
+  if (OTP == otp) {
+    console.log("OTP Verified");
+    return true;
   }
+  return false;
 }
