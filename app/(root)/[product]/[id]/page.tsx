@@ -12,9 +12,11 @@ interface ProductPageProps {
 const ProductPage = async ({ params }: ProductPageProps) => {
   const { id } = params;
   const product = await getProductById(id);
+  console.log(product.userId);
+
   return (
     <>
-      <BreadCrumbs />
+      <BreadCrumbs productName={product.title} />
       <ProductDisplay product={product} />
     </>
   );

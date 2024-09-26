@@ -19,15 +19,33 @@ const schemaRegister = z.object({
   username: z.string().min(3).max(20, {
     message: "Username must be between 3 and 20 characters",
   }),
-  password: z.string().min(6).max(100, {
-    message: "Password must be between 6 and 100 characters",
-  }),
+  password: z
+    .string()
+    .min(8, {
+      message: "Password must be at least 8 characters long",
+    })
+    .max(100, {
+      message: "Password must be no longer than 100 characters",
+    })
+    .regex(/^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])/, {
+      message:
+        "Password must contain at least one uppercase letter, one digit, and one special character",
+    }),
   email: z.string().email({
     message: "Please enter a valid email address",
   }),
-  confirmPassword: z.string().min(6).max(100, {
-    message: "Password must be between 6 and 100 characters",
-  }),
+  confirmPassword: z
+    .string()
+    .min(6, {
+      message: "Password must be at least 8 characters long",
+    })
+    .max(100, {
+      message: "Password must be no longer than 100 characters",
+    })
+    .regex(/^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])/, {
+      message:
+        "Password must contain at least one uppercase letter, one digit, and one special character",
+    }),
 });
 const schemaLogin = z.object({
   password: z.string().min(6).max(100, {

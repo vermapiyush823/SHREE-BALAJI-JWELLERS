@@ -10,27 +10,28 @@ import { useState } from "react";
 
 interface ProductDisplayProps {
   product: {
+    _id: string; // Unique identifier for the product
     title: string;
     price: number;
-    image: string[];
-    type: string;
-    subType: string;
-    weight: number;
-    purity: number;
-    noOfReview: number;
-    rating: number;
-    _id: string;
-    stone: boolean;
-    stoneWeight: number;
-    stonePurity: number;
-    stoneType: string;
-    stonePrice: number;
-    gender: string;
-    stoneQuantity: number;
+    image: string[]; // Array of image URLs
+    type: string; // e.g., Jewelry
+    subType: string; // e.g., Ring, Necklace
+    weight: number; // in grams
+    purity?: number; // Optional purity of the material
+    noOfReviews: number; // Number of reviews
+    rating: number; // Average rating
+    stone: boolean; // Whether the product has a stone
+    stoneWeight?: number; // Optional weight of the stone
+    stonePurity?: number; // Optional purity of the stone
+    stoneType?: string; // Optional type of the stone
+    stonePrice?: number; // Optional price of the stone
+    stoneQuantity?: number; // Optional quantity of stones
+    gender: string; // e.g., "Men", "Women", "Unisex"
     reviews: Array<{
-      userID: string;
-      userRating: number;
-      comment: string;
+      userId: string; // Reference to the user who made the review
+      comment: string; // Review comment
+      rating: number; // Rating given in the review
+      createdAt: string; // Date of the review (ISO string format)
     }>;
   };
 }
@@ -281,11 +282,11 @@ const ProductDisplay = ({ product }: ProductDisplayProps) => {
                     className="rounded-full border-[2px] border-black h-[30px] w-[30px] "
                   />
                   <h1 className="text-lg ml-2 self-center text-gray-900 font-bold">
-                    {product.reviews[index].userID}{" "}
+                    {product.reviews[index].userId}{" "}
                   </h1>
                   <div className="flex ml-auto items-center gap-1">
                     {Array.from({ length: 5 }, (_, i) => i + 1).map((star) => {
-                      if (product.reviews[index].userRating >= star) {
+                      if (product.reviews[index].rating >= star) {
                         return (
                           <Image
                             key={star}
@@ -295,7 +296,7 @@ const ProductDisplay = ({ product }: ProductDisplayProps) => {
                             height={22}
                           />
                         );
-                      } else if (product.reviews[index].userRating > star - 1) {
+                      } else if (product.reviews[index].rating > star - 1) {
                         return (
                           <Image
                             key={star}
@@ -318,7 +319,7 @@ const ProductDisplay = ({ product }: ProductDisplayProps) => {
                       }
                     })}
                     <p className="text-md  text-gray-700 font-bold">
-                      ({product.reviews[index].userRating}/5)
+                      ({product.reviews[index].rating}/5)
                     </p>
                   </div>
                   <p className="text-md text-gray-700 block w-full ml-10">
@@ -332,6 +333,11 @@ const ProductDisplay = ({ product }: ProductDisplayProps) => {
               No reviews available
             </p>
           )}
+        </div>
+        <div className="flex justify-start mt-4">
+          <h1 className="text-2xl text-center text-gray-800 font-bold">
+            Add your review
+          </h1>
         </div>
       </div>
     </div>

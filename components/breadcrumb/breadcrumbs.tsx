@@ -1,10 +1,9 @@
 "use client";
-
 import ArrowIcon from "@/assets/icons/Forward.svg";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams, useSearchParams } from "next/navigation";
-const BreadCrumbs = () => {
+const BreadCrumbs = ({ productName }: any) => {
   const params = useParams();
   const searchParams = useSearchParams();
   const jwellery_type = params.product;
@@ -16,9 +15,8 @@ const BreadCrumbs = () => {
   if (jwellery_subtype) {
     pathNames.push(jwellery_subtype);
   }
-  const id = useParams().id;
-  if (id) {
-    pathNames.push(id.toString().replace(/-/g, " "));
+  if (productName) {
+    pathNames.push(productName);
   }
   const arrLinks = pathNames.map((path: String, index: number) => {
     return {
