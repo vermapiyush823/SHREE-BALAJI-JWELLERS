@@ -50,10 +50,11 @@ const ProductSchema = new Schema(
     gender: { type: String, required: true }, // Gender category
     reviews: [
       {
-        userId: { type: Schema.Types.ObjectId, ref: "User" }, // Reference to user
+        username: { type: String, required: true }, // Reviewer username
         comment: { type: String, required: true }, // Review comment
-        rating: { type: Number, required: true }, // Review rating
         createdAt: { type: Date, default: Date.now }, // Date of the review
+        rating: { type: Number, required: true }, // Rating given in the review
+        imgUrl: { type: String }, // Reviewer image
       },
     ],
   },

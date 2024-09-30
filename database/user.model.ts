@@ -88,6 +88,22 @@ const UserSchema = new Schema(
         addedAt: { type: Date, default: Date.now },
       },
     ],
+    comments: [
+      {
+        productId: { type: Schema.Types.ObjectId, ref: "Product" },
+        comment: { type: String, required: true },
+        rating: { type: Number, required: true },
+        createdAt: { type: Date, default: Date.now },
+      },
+    ],
+    ordersHistory: [
+      {
+        orderId: { type: Schema.Types.ObjectId, ref: "Order" },
+        status: { type: String, required: true },
+        totalAmount: { type: Number, required: true },
+        date: { type: Date, default: Date.now },
+      },
+    ],
     lastLogin: {
       type: Date,
       default: Date.now,
@@ -100,7 +116,6 @@ const UserSchema = new Schema(
   { timestamps: true }
 );
 
-// Using models to prevent overwriting the model during hot reloading in development
 const User = models.User || model<UserModel>("User", UserSchema);
 
 export default User;
