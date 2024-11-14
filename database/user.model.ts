@@ -1,19 +1,21 @@
 import { Document, model, models, Schema } from "mongoose";
 
-// Defining the interface for TypeScript
 export interface UserModel extends Document {
   email: string;
   password: string;
-  name: string; // Keeping name as a single string
+  name: string;
   phone: string;
+  gender: string;
+  imgURL: string;
+  imgType: string;
   addresses: {
     street: string;
     city: string;
     state: string;
     country: string;
     postalCode: string;
-    label: string; // e.g., "Home", "Work"
-    phoneNumber: string; // Adding phone number to address
+    label: string;
+    phoneNumber: string;
   }[];
   orders: {
     orderId: Schema.Types.ObjectId;
@@ -31,7 +33,7 @@ export interface UserModel extends Document {
   isVerified: boolean;
   resetPasswordToken: string;
   resetPasswordExpiresAt: Date;
-  verificationToken: string;
+  verificationToken: String;
   verificationTokenExpiresAt: Date;
 }
 
@@ -50,11 +52,27 @@ const UserSchema = new Schema(
     },
     name: {
       type: String,
-      required: true, // Name is a single string field
+      required: true,
     },
     phone: {
       type: String,
       required: false,
+      default: "",
+    },
+    imgURL: {
+      type: String,
+      default: null,
+      required: false,
+    },
+    imgType: {
+      type: String,
+      default: "",
+      required: false,
+    },
+    gender: {
+      type: String,
+      required: false,
+      default: "",
     },
     addresses: [
       {
@@ -63,8 +81,8 @@ const UserSchema = new Schema(
         state: { type: String, required: true },
         country: { type: String, required: true },
         postalCode: { type: String, required: true },
-        label: { type: String, required: true }, // e.g., "Home", "Work"
-        phoneNumber: { type: String, required: true }, // Phone number for each address
+        label: { type: String, required: true },
+        phoneNumber: { type: String, required: true },
       },
     ],
     orders: [

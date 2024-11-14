@@ -2,12 +2,10 @@
 import Login from "@/assets/icons/Login.svg";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
 import heart from "../../assets/icons/Heart.svg";
 import logo from "../../assets/icons/logo.svg";
 import shoppinBag from "../../assets/icons/shopping bag.svg";
 import profile from "../../assets/icons/Union.svg";
-import filledProfile from "../../assets/icons/User.svg";
 import LogoutButton from "../button/LogoutButton";
 import Search from "../searchbar/searchbar";
 
@@ -16,7 +14,6 @@ interface navbarProps {
 }
 
 export default function Navbar({ user }: navbarProps) {
-  const [userClicked, setUserClicked] = useState(false);
   const quickLinks = [
     { title: "Gold", link: "gold" },
     { title: "Silver", link: "silver" },
@@ -53,13 +50,7 @@ export default function Navbar({ user }: navbarProps) {
             </li>
             <li>
               <Link href="/profile">
-                <Image
-                  src={userClicked ? filledProfile : profile}
-                  onClick={() => setUserClicked(!userClicked)}
-                  alt="profile"
-                  width={20}
-                  height={25}
-                />
+                <Image src={profile} alt="profile" width={20} height={25} />
               </Link>
             </li>
             <li>
