@@ -15,14 +15,6 @@ import { useState } from "react";
 import logo from "../../assets/icons/logo.svg";
 import LogoutButton from "../button/LogoutButton";
 
-interface NavbarProps {
-  user: {
-    name?: string;
-    email?: string;
-    avatar?: string;
-  } | null;
-}
-
 const todaysRates = {
   gold: { value: "10", unit: "gms", purity: "24K - 999", price: "₹65,000" },
   silver: { value: "10", unit: "gms", purity: "999", price: "₹750" },
@@ -38,7 +30,7 @@ const quickLinks = [
   { title: "Rate Today", link: "#" },
 ];
 
-const Navbar = ({ user }: NavbarProps) => {
+const Navbar = (user: any) => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [showRates, setShowRates] = useState(false);

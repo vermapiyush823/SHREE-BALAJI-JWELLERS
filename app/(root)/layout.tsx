@@ -11,7 +11,7 @@ export default async function Layout({
   const user = await getAuthToken();
   return (
     <main>
-      <Navbar user={user?.toString()} />
+      <Navbar user={user} />
       <section className="pt-[105px] min-h-[90vh]">
         <div>{children}</div>
       </section>
