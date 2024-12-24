@@ -16,6 +16,7 @@ export interface UserModel extends Document {
     postalCode: string;
     label: string;
     phoneNumber: string;
+    addId: string;
   }[];
   orders: {
     orderId: Schema.Types.ObjectId;
@@ -83,6 +84,7 @@ const UserSchema = new Schema(
         postalCode: { type: String, required: true },
         label: { type: String, required: true },
         phoneNumber: { type: String, required: true },
+        addId: { type: String, required: false },
       },
     ],
     orders: [

@@ -71,3 +71,77 @@ export async function updateUserProfilePicture(
     console.error("Error updating profile picture:", error);
   }
 }
+
+export async function updateUserAddress(
+  id: string,
+  addresses: {
+    street: string;
+    city: string;
+    state: string;
+    country: string;
+    postalCode: string;
+    label: string;
+    phoneNumber: string;
+  }[]
+) {
+  await connectToDatabase();
+  try {
+    const user = await User.findById(id); // Find user by ID
+    if (!user) {
+      throw new Error("User not found");
+    }
+    console.log("addresses", addresses);
+    user.addresses = addresses;
+    const updatedUser = await user.save();
+    return updatedUser;
+  } catch (error) {
+    console.error("Error updating user address:", error);
+    throw error;
+  }
+}
+
+export async function removeUserAddress(id: string, address: any) {
+  await connectToDatabase();
+  try {
+    const user = await User.findById(id);
+    if (!user) {
+      throw new Error("User not found");
+    }
+    user.addresses = user.addresses.filter(
+      (userAddress: any) => userAddress.id !== address.id
+    );
+    const updatedUser = await user.save();
+    return updatedUser;
+  } catch (error) {
+    console.error("Error updating user address:", error);
+    throw error;
+  }
+}
+
+export async function addUserAddress(
+  id: string,
+  address: {
+    street: string;
+    city: string;
+    state: string;
+    country: string;
+    postalCode: string;
+    label: string;
+    phoneNumber: string;
+    addId: string;
+  }
+) {
+  await connectToDatabase();
+  try {
+    const user = await User.findById(id); // Find user by ID
+    if (!user) {
+      throw new Error("User not found");
+    }
+    user.addresses.push(address);
+    const updatedUser = await user.save();
+    return updatedUser;
+  } catch (error) {
+    console.error("Error updating user address:", error);
+    throw error;
+  }
+}

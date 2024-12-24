@@ -2,269 +2,278 @@
 import Heart from "@/assets/icons/Heart.svg";
 import HeartFilled from "@/assets/icons/HeartFilled.svg";
 import BISLogo from "@/assets/images/BIS.png";
+import { Star } from "lucide-react"; // Add Lucide React icons
 import Image from "next/image";
 import { useState } from "react";
 import ReviewContainer from "../review/reviewContainer";
-
-interface ProductDisplayProps {
-  product: {
-    _id: string; // Unique identifier for the product
-    title: string;
-    price: number;
-    image: string[]; // Array of image URLs
-    type: string; // e.g., Jewelry
-    subType: string; // e.g., Ring, Necklace
-    weight: number; // in grams
-    purity?: number; // Optional purity of the material
-    noOfReviews: number; // Number of reviews
-    rating: number; // Average rating
-    stone: boolean; // Whether the product has a stone
-    stoneWeight?: number; // Optional weight of the stone
-    stonePurity?: number; // Optional purity of the stone
-    stoneType?: string; // Optional type of the stone
-    stonePrice?: number; // Optional price of the stone
-    stoneQuantity?: number; // Optional quantity of stones
-    gender: string; // e.g., "Men", "Women", "Unisex"
-    reviews: Array<{
-      username: string; // Reference to the user who made the review
-      comment: string; // Review comment
-      rating: number; // Rating given in the review
-      imgUrl: string; // URL of the user's profile image
-    }>;
-  };
+interface Review {
+  username: string;
+  comment: string;
+  rating: number;
+  imgUrl: string;
 }
 
+interface Stone {
+  weight: number;
+  purity: number;
+  type: string;
+  price: number;
+  quantity: number;
+}
+
+interface Product {
+  _id: string;
+  title: string;
+  price: number;
+  image: string[];
+  type: string;
+  subType: string;
+  weight: number;
+  purity: number;
+  noOfReviews: number;
+  rating: number;
+  stone: boolean;
+  stoneDetails?: Stone;
+  gender: "Men" | "Women" | "Unisex";
+  reviews: Review[];
+}
+
+interface ProductDisplayProps {
+  product: Product;
+}
 const ProductDisplay = ({ product }: ProductDisplayProps) => {
   const [imageLink, setImageLink] = useState(product.image[0]);
   const [isWishlisted, setWishlisted] = useState(false);
+  const [selectedSize, setSelectedSize] = useState("");
+  const [quantity, setQuantity] = useState(1);
+
+  // Price calculations
   const basePrice = product.price;
-  const stonePrice = product.stonePrice;
+  const stonePrice = product.stoneDetails?.price || 0;
   const makingCharges = Math.round(basePrice * 0.3);
   const gst = Math.round(basePrice * 0.18);
-  const totalPrice = Math.round(basePrice + makingCharges + gst);
+  const totalPrice = Math.round(basePrice + makingCharges + gst + stonePrice);
+
   return (
-    <div className="product-display-container gap-4 flex flex-col p-4 px-12">
-      <div className="product-display flex gap-4 w-[100%]">
-        <div className="relative product-image-container w-[35%] flex flex-col justify-center">
-          <button
-            title="Add to Wishlist"
-            className="flex absolute justify-end items-center top-8 z-[100] right-8"
-            onClick={() => setWishlisted(!isWishlisted)}
-          >
-            {isWishlisted ? (
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {/* Product Header */}
+      <div className="flex flex-col md:flex-row gap-8">
+        {/* Image Gallery Section */}
+        <div className="w-full md:w-1/2">
+          <div className="relative">
+            <button
+              title="Add to Wishlist"
+              className="absolute top-4 right-4 z-10 p-2 bg-white rounded-full shadow-lg hover:scale-110 transition-transform"
+              onClick={() => setWishlisted(!isWishlisted)}
+            >
               <Image
-                src={HeartFilled}
-                alt="HeartFilled"
-                width={30}
-                height={30}
+                src={isWishlisted ? HeartFilled : Heart}
+                alt="Wishlist"
+                width={24}
+                height={24}
               />
-            ) : (
-              <Image src={Heart} alt="Heart" width={30} height={30} />
-            )}
-          </button>
-          <Image
-            src={imageLink}
-            alt={product.title}
-            width={450}
-            height={450}
-            className="object-cover rounded-[40px] shadow-md"
-          />
-          <p className="text-center text-md mt-2">{product.title}</p>
-          <ul className="flex justify-center gap-1 mt-4">
+            </button>
+            <Image
+              src={imageLink}
+              alt={product.title}
+              width={600}
+              height={600}
+              className="w-full rounded-2xl object-cover"
+            />
+          </div>
+
+          {/* Thumbnail Gallery */}
+          <div className="mt-4 grid grid-cols-5 gap-2">
             {product.image.map((img, index) => (
-              <li
+              <button
                 key={index}
-                className={`cursor-pointer p-2 
-                    hover:border-b-[3px] hover:border-black transition-all ease-in duration-200
-                ${imageLink === img ? "border-b-[3px] border-black" : ""}`}
+                className={`relative rounded-lg overflow-hidden ${
+                  imageLink === img ? "ring-2 ring-black" : ""
+                }`}
                 onClick={() => setImageLink(img)}
               >
                 <Image
                   src={img}
-                  alt={product.title}
-                  width={50}
-                  height={50}
-                  className="object-cover"
+                  alt={`${product.title} ${index + 1}`}
+                  width={100}
+                  height={100}
+                  className="w-full object-cover aspect-square"
                 />
-              </li>
+              </button>
             ))}
-          </ul>
+          </div>
         </div>
-        <div className="product-details w-[65%] flex flex-col py-3">
-          <h1 className="text-xl font-light text-gray-800">{product.title}</h1>
-          <p className="text-md text-gray-700 font-bold mt-3">
-            Product unique code:{" "}
-            <span className="text-gray-500 font-normal">{product._id}</span>
-          </p>
-          <p className="text-lg text-gray-700 font-bold mt-2">
-            ₹{totalPrice}/-{" "}
-            <span className="font-normal text-gray-500">
-              (inclusive of all taxes)
+
+        {/* Product Info Section */}
+        <div className="w-full md:w-1/2 flex flex-col">
+          <h1 className="text-3xl font-semibold text-gray-900">
+            {product.title}
+          </h1>
+
+          {/* Rating */}
+          <div className="mt-2 flex items-center gap-2">
+            <div className="flex">
+              {[...Array(5)].map((_, i) => (
+                <Star
+                  key={i}
+                  className={`w-5 h-5 ${
+                    i < product.rating
+                      ? "text-yellow-400 fill-current"
+                      : "text-gray-300"
+                  }`}
+                />
+              ))}
+            </div>
+            <span className="text-sm text-gray-600">
+              ({product.noOfReviews} reviews)
             </span>
-          </p>
-          <p className="text-lg text-gray-700 font-bold mt-2">
-            Weight:{" "}
-            <span className="font-normal text-gray-500">{product.weight}g</span>
-          </p>
-          <hr className="mt-4 border-t border-black" />
-          <div className="flex justify-between mt-4">
-            <div className="flex flex-col w-[50%] h-[90%]">
-              <h1
-                className="text-xl
-        
-            text-gray-800 font-bold"
-              >
-                Product price details:
-              </h1>
-              <table className="table-auto w-[100%] mt-2 border-collapse border-black">
-                <tbody>
-                  <tr className="bg-gray-100  hover:bg-gray-200 border-b border-black">
-                    <td className="text-base text-gray-700 px-3 py-1.5 capitalize">
-                      {product.type}
-                    </td>
-                    <td className="text-base text-gray-700 px-3 py-1.5">
-                      ₹{basePrice}/-
-                    </td>
-                  </tr>
-                  {product.stone && (
-                    <tr className="hover:bg-gray-200 border-b border-black">
-                      <td className="text-base text-gray-700 px-3 py-1.5">
-                        {product.stoneType}
-                      </td>
-                      <td className="text-base text-gray-700 px-3 py-1.5">
-                        ₹{stonePrice}/-
-                      </td>
-                    </tr>
-                  )}
-                  <tr className="bg-gray-100 hover:bg-gray-200 border-b border-black">
-                    <td className="text-base text-gray-700 px-3 py-1.5">
-                      Making Charges
-                    </td>
-                    <td className="text-base text-gray-700 px-3 py-1.5">
-                      ₹{makingCharges}/-
-                    </td>
-                  </tr>
-                  <tr className="hover:bg-gray-200 border-b border-black">
-                    <td className="text-base text-gray-700 px-3 py-1.5">GST</td>
-                    <td className="text-base text-gray-700 px-3 py-1.5">
-                      ₹{gst}/-
-                    </td>
-                  </tr>
-                  <tr className="bg-gray-100 hover:bg-gray-200">
-                    <td className="text-base text-gray-700 px-3 py-1.5">
-                      Total
-                    </td>
-                    <td className="text-base text-gray-700 px-3 py-1.5">
-                      ₹{totalPrice}/-
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div className="flex w-[40%] gap-5 align-middle rounded-2xl justify-center ">
-              <Image
-                src={BISLogo}
-                alt="BISLogo"
-                width={100}
-                height={50}
-                className="h-[140px] w-[200px] my-auto border-r-2 border-gray-400 pr-4"
-              />
-              <h1 className="text-sm text-center p-2 align-middle my-auto text-gray-700 font-bold">
-                100% Certified International Standard
-              </h1>
-            </div>
           </div>
-          <div className="btn-container flex  gap-3 mt-10">
-            <button
-              type="button"
-              className="
-            bg-[#262626]
-            text-[#fff] border-none px-[20px] py-[10px] rounded-[4px] font-[16px] cursor-pointer
-            hover:bg-[#444] transition-all ease-in duration-200
-            "
-            >
-              Add to Cart
-            </button>
-            <button
-              type="button"
-              className="
-            bg-[#262626]
-            text-[#fff] border-none px-[20px] py-[10px] rounded-[4px] font-[16px] cursor-pointer
-            hover:bg-[#444] transition-all ease-in duration-200
-            "
-            >
-              Buy Now
-            </button>
+
+          {/* Price */}
+          <div className="mt-4">
+            <p className="text-3xl font-bold text-gray-900">₹{totalPrice}/-</p>
+            <p className="text-sm text-gray-500">Inclusive of all taxes</p>
           </div>
-        </div>
-      </div>
-      <div className="product-description w-[100%] mt-4">
-        <h1 className="text-2xl text-center text-gray-800 font-bold">
-          Product Details
-        </h1>
-        <div className="flex gap-x-[100px] rounded-xl bg-gray-200 mt-4 p-4 ">
-          <div className="flex flex-col w-[15%]">
-            <h1 className="text-lg capitalize text-gray-700  font-bold ">
-              {product.type} Details
-            </h1>
-            <div className="mt-2">
-              <p className="text-md p-1 flex justify-between border-b capitalize border-gray-400  text-gray-700 font-bold">
-                {product.type} Type
-                <span className="text-gray-500 capitalize font-normal">
-                  {product.subType}
-                </span>
-              </p>
-              <p className="text-md p-1  border-b flex justify-between border-gray-400 text-gray-700 font-bold mt-2">
-                Purity
-                <span className="text-gray-500 font-normal">
-                  {product.purity}%
-                </span>
-              </p>
-              <p className="text-md border-b p-1 flex justify-between border-gray-400 text-gray-700 font-bold mt-2">
-                Weight
-                <span className="text-gray-500 font-normal">
-                  {product.weight}gm
-                </span>
-              </p>
-              <p className="text-md border-b p-1 flex justify-between border-gray-400 text-gray-700 font-bold mt-2">
-                Gender
-                <span className="text-gray-500 font-normal capitalize">
-                  {product.gender}
-                </span>
-              </p>
-            </div>
-          </div>
-          {product.stone && (
-            <div className="flex flex-col w-[15%]">
-              <h1 className="text-lg capitalize text-gray-700  font-bold ">
-                {product.stoneType} Details
-              </h1>
-              <div className="mt-2">
-                <p className="text-md p-1  border-b flex justify-between border-gray-400 text-gray-700 font-bold mt-2">
-                  Purity
-                  <span className="text-gray-500 font-normal">
-                    {product.stonePurity}%
-                  </span>
-                </p>
-                <p className="text-md border-b p-1 flex justify-between border-gray-400 text-gray-700 font-bold mt-2">
-                  Weight
-                  <span className="text-gray-500 font-normal">
-                    {product.stoneWeight}gm
-                  </span>
-                </p>
-                <p className="text-md border-b p-1 flex justify-between border-gray-400 text-gray-700 font-bold mt-2">
-                  Quantity
-                  <span className="text-gray-500 font-normal">
-                    {product.stoneQuantity}pcs
-                  </span>
-                </p>
+
+          {/* Product Details */}
+          <div className="mt-6 space-y-6">
+            <div className="flex flex-col space-y-2">
+              <h3 className="text-sm font-medium text-gray-900">Details</h3>
+              <div className="grid grid-cols-2 gap-4 text-sm">
+                <div className="flex justify-between py-2 border-b">
+                  <span className="text-gray-500">Type</span>
+                  <span className="font-medium">{product.subType}</span>
+                </div>
+                <div className="flex justify-between py-2 border-b">
+                  <span className="text-gray-500">Weight</span>
+                  <span className="font-medium">{product.weight}g</span>
+                </div>
+                <div className="flex justify-between py-2 border-b">
+                  <span className="text-gray-500">Purity</span>
+                  <span className="font-medium">{product.purity}%</span>
+                </div>
+                <div className="flex justify-between py-2 border-b">
+                  <span className="text-gray-500">Gender</span>
+                  <span className="font-medium">{product.gender}</span>
+                </div>
               </div>
             </div>
-          )}
+
+            {/* Stone Details if applicable */}
+            {product.stone && (
+              <div className="flex flex-col space-y-2">
+                <h3 className="text-sm font-medium text-gray-900">
+                  {product.stoneDetails?.type} Details
+                </h3>
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div className="flex justify-between py-2 border-b">
+                    <span className="text-gray-500">Stone Weight</span>
+                    <span className="font-medium">
+                      {product.stoneDetails?.weight}ct
+                    </span>
+                  </div>
+                  <div className="flex justify-between py-2 border-b">
+                    <span className="text-gray-500">Quantity</span>
+                    <span className="font-medium">
+                      {product.stoneDetails?.quantity} pcs
+                    </span>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Quantity Selector */}
+            <div className="flex items-center space-x-4">
+              <span className="text-sm font-medium text-gray-900">
+                Quantity
+              </span>
+              <div className="flex items-center border border-gray-300 rounded">
+                <button
+                  className="px-3 py-1 text-gray-600 hover:bg-gray-100"
+                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                >
+                  -
+                </button>
+                <span className="px-3 py-1 border-x">{quantity}</span>
+                <button
+                  className="px-3 py-1 text-gray-600 hover:bg-gray-100"
+                  onClick={() => setQuantity(quantity + 1)}
+                >
+                  +
+                </button>
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex gap-4">
+              <button className="flex-1 bg-black text-white py-3 px-6 rounded-lg hover:bg-gray-800 transition-colors">
+                Add to Cart
+              </button>
+              <button className="flex-1 bg-black text-white py-3 px-6 rounded-lg hover:bg-gray-800 transition-colors">
+                Buy Now
+              </button>
+            </div>
+          </div>
+
+          {/* Certification */}
+          <div className="mt-8 flex items-center gap-4 p-4 bg-gray-50 rounded-lg">
+            <Image
+              src={BISLogo}
+              alt="BIS Certification"
+              width={80}
+              height={80}
+              className="object-contain"
+            />
+            <p className="text-sm text-gray-600">
+              100% Certified International Standard
+            </p>
+          </div>
         </div>
       </div>
-      <ReviewContainer reviews={product.reviews} />
+
+      {/* Price Breakdown */}
+      <div className="mt-12">
+        <h2 className="text-lg font-medium text-gray-900 mb-4">
+          Price Breakdown
+        </h2>
+        <div className="bg-gray-50 rounded-lg p-6">
+          <table className="w-full">
+            <tbody className="divide-y divide-gray-200">
+              <tr className="flex justify-between py-2">
+                <td className="text-gray-500">Base Price</td>
+                <td className="font-medium">₹{basePrice}/-</td>
+              </tr>
+              {product.stone && (
+                <tr className="flex justify-between py-2">
+                  <td className="text-gray-500">
+                    {product.stoneDetails?.type}
+                  </td>
+                  <td className="font-medium">₹{stonePrice}/-</td>
+                </tr>
+              )}
+              <tr className="flex justify-between py-2">
+                <td className="text-gray-500">Making Charges</td>
+                <td className="font-medium">₹{makingCharges}/-</td>
+              </tr>
+              <tr className="flex justify-between py-2">
+                <td className="text-gray-500">GST (18%)</td>
+                <td className="font-medium">₹{gst}/-</td>
+              </tr>
+              <tr className="flex justify-between py-2 font-bold">
+                <td>Total</td>
+                <td>₹{totalPrice}/-</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Reviews Section */}
+      <div className="mt-12">
+        <ReviewContainer reviews={product.reviews} />
+      </div>
     </div>
   );
 };
+
 export default ProductDisplay;

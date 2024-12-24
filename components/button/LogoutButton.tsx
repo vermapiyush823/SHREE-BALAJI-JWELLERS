@@ -1,8 +1,7 @@
 "use client";
 
-import Logout from "@/assets/icons/Logout.svg";
 import { logoutUserAction } from "@/lib/actions/auth-actions"; // Adjust the import path
-import Image from "next/image";
+import { LogOutIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export default function LogoutButton() {
@@ -16,15 +15,12 @@ export default function LogoutButton() {
   };
 
   return (
-    <button onClick={handleLogout} className="ml-4">
+    <button
+      onClick={handleLogout}
+      className="flex items-center text-gray-600 hover:text-black"
+    >
       {}
-      <Image
-        src={Logout}
-        alt="logout"
-        width={25}
-        height={25}
-        className="mt-2"
-      />
+      <LogOutIcon size={24} />
     </button>
   );
 }

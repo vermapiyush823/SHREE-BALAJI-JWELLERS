@@ -37,7 +37,7 @@ const ProfilePage = async () => {
   const user: User = await getUserById(decodedToken._id);
 
   return (
-    <div>
+    <div className="min-h-fit">
       <Profile user={user} />
     </div>
   );
