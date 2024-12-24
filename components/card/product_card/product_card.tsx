@@ -10,8 +10,8 @@ import { useState } from "react";
 
 // ... (keep the previous interfaces)
 
-const ProductCard: React.FC<ProductCardProps> = ({ user, product }) => {
-  const [rating, setRating] = useState<Rating>(product.rating as Rating);
+const ProductCard = ({ user, product }: any) => {
+  const [rating, setRating] = useState(product.rating);
   const [isWishlisted, setWishlisted] = useState<boolean>(false);
   const [isHovered, setIsHovered] = useState<boolean>(false);
 
