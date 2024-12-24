@@ -69,9 +69,17 @@ const config = {
           to: { height: "0" },
         },
       },
+      height: {
+        banner: "clamp(200px, 40vh, 600px)",
+      },
+      fontSize: {
+        dynamic: "clamp(1.5rem, 5vw, 3.5rem)",
+      },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "fade-in": "fadeIn 0.8s ease-out forwards",
+        "slide-up": "slideUp 0.8s ease-out forwards",
       },
     },
   },

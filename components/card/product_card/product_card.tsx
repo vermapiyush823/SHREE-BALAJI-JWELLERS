@@ -7,116 +7,151 @@ import StarHalfFilled from "@/assets/icons/StarHalf.svg";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-interface ProductProps {
-  user: any;
-  product: {
-    title: string;
-    price: number;
-    image: string;
-    type: string;
-    subType: string;
-    weight: number;
-    purity: number;
-    noOfReview: number;
-    rating: number;
-    _id: string;
-  };
-}
 
-const ProductCard = (productProps: ProductProps) => {
-  const [rating, setRating] = useState(productProps.product.rating);
-  const [isWishlisted, setWishlisted] = useState(false);
+// ... (keep the previous interfaces)
+
+const ProductCard: React.FC<ProductCardProps> = ({ user, product }) => {
+  const [rating, setRating] = useState<Rating>(product.rating as Rating);
+  const [isWishlisted, setWishlisted] = useState<boolean>(false);
+  const [isHovered, setIsHovered] = useState<boolean>(false);
+
   return (
     <div
-      className="product-card shadow-md relative border-black border-[1px] rounded-[10px] p-1 w-fit hover:shadow-xl shadow-gray-300 hover:shadow-gray-300
-    transition-shadow duration-500 ease-in-out cursor-pointer
-    "
+      className="relative w-[320px] bg-white rounded-xl overflow-hidden"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      style={{
+        boxShadow: isHovered
+          ? "0 10px 20px rgba(0,0,0,0.15)"
+          : "0 4px 6px rgba(0,0,0,0.1)",
+        transition: "all 0.3s ease-in-out",
+      }}
     >
-      {!productProps.user ? (
+      {/* Wishlist Button */}
+      {!user ? (
         <Link
-          className="
-        flex absolute justify-end items-center top-4 z-[100] right-4
-        "
           href="/sign-in"
+          className="absolute top-4 right-4 z-10 p-2 bg-white/80 backdrop-blur-sm rounded-full
+            transform hover:scale-110 transition-transform duration-300 ease-in-out"
         >
           <Image
             src={isWishlisted ? HeartFilled : Heart}
             alt="Heart"
-            width={25}
-            height={25}
+            width={24}
+            height={24}
+            className="transition-transform duration-300 ease-in-out hover:scale-110"
           />
         </Link>
       ) : (
         <button
           title="Add to Wishlist"
-          className="flex absolute justify-end items-center top-4 z-[100] right-4"
+          className="absolute top-4 right-4 z-10 p-2 bg-white/80 backdrop-blur-sm rounded-full
+            transform hover:scale-110 transition-all duration-300 ease-in-out
+            hover:bg-rose-50"
           onClick={() => setWishlisted(!isWishlisted)}
         >
-          {isWishlisted ? (
-            <Image src={HeartFilled} alt="HeartFilled" width={30} height={30} />
-          ) : (
-            <Image src={Heart} alt="Heart" width={30} height={30} />
-          )}
+          <Image
+            src={isWishlisted ? HeartFilled : Heart}
+            alt="Heart"
+            width={24}
+            height={24}
+            className={`transition-all duration-300 ease-in-out 
+              ${isWishlisted ? "scale-110" : "scale-100"}`}
+          />
         </button>
       )}
-      <Link href={`/${productProps.product.type}/${productProps.product._id}`}>
-        <Image
-          src={productProps.product.image[0]}
-          alt={productProps.product.title}
-          width={200}
-          height={100}
-          className="w-[300px] object-cover overflow-hidden hover:scale-95 transition-transform duration-500 ease-in-out"
-        />
 
-        <div className="flex flex-col  gap-1 p-2 mx-auto w-[95%] border-t border-black ">
-          <h2 className="text-[17px] w-full overflow-hidden text-ellipsis text-nowrap  text-gray-800">
-            {productProps.product.title}
+      {/* Product Link */}
+      <Link href={`/${product.type}/${product._id}`} className="group block">
+        {/* Product Image */}
+        <div className="relative overflow-hidden aspect-square">
+          <Image
+            src={product.image[0]}
+            alt={product.title}
+            fill
+            className="object-cover transform group-hover:scale-105 
+              transition-transform duration-500 ease-in-out"
+            sizes="(max-width: 320px) 100vw, 320px"
+          />
+          {/* Discount Badge - if needed */}
+          {product.price > 1000 && (
+            <div
+              className="absolute top-4 left-4 bg-red-500 text-white px-3 py-1 
+              rounded-full text-sm font-medium"
+            >
+              20% OFF
+            </div>
+          )}
+        </div>
+
+        {/* Product Details */}
+        <div className="p-4 space-y-3">
+          {/* Title */}
+          <h2
+            className="font-semibold text-lg text-gray-800 line-clamp-2 
+            group-hover:text-gray-500 transition-colors duration-300"
+          >
+            {product.title}
           </h2>
-          <p className=" font-[gilroy-medium] text-gray-800 font-bold text-[16px] ">
-            ₹{productProps.product.price}/-
-          </p>
-          <div className="flex mt-1 items-center gap-1">
-            {Array.from({ length: 5 }, (_, i) => i + 1).map((star) => {
-              if (rating >= star) {
-                return (
-                  <Image
-                    key={star}
-                    src={StarFilled}
-                    alt="Star"
-                    width={22}
-                    height={22}
-                  />
-                );
-              } else if (rating > star - 1) {
-                return (
-                  <Image
-                    key={star}
-                    src={StarHalfFilled}
-                    alt="Star"
-                    width={22}
-                    height={22}
-                  />
-                );
-              } else {
-                return (
-                  <Image
-                    key={star}
-                    src={StarEmpty}
-                    alt="Star"
-                    width={22}
-                    height={22}
-                  />
-                );
-              }
-            })}
 
-            <p className="text-gray-500">
-              ({productProps.product.noOfReview} Reviews)
-            </p>
+          {/* Price */}
+          <div className="flex items-baseline gap-2">
+            <span className="text-xl font-bold text-gray-900">
+              ₹{product.price.toLocaleString("en-IN")}
+            </span>
+            {product.price > 1000 && (
+              <span className="text-sm text-gray-500 line-through">
+                ₹{(product.price * 1.2).toLocaleString("en-IN")}
+              </span>
+            )}
+          </div>
+
+          {/* Product Specs */}
+          <div className="flex flex-wrap gap-2 text-sm text-gray-600">
+            {product.weight && (
+              <span className="px-2 py-1 bg-gray-100 rounded-full">
+                {product.weight}g
+              </span>
+            )}
+            {product.purity && (
+              <span className="px-2 py-1 bg-gray-100 rounded-full">
+                {product.purity}K
+              </span>
+            )}
+          </div>
+
+          {/* Ratings */}
+          <div className="flex items-center gap-1">
+            <div className="flex">
+              {Array.from({ length: 5 }, (_, i) => i + 1).map((star) => (
+                <div
+                  key={star}
+                  className="transform hover:scale-110 transition-transform duration-200"
+                >
+                  <Image
+                    src={
+                      rating >= star
+                        ? StarFilled
+                        : rating > star - 1
+                        ? StarHalfFilled
+                        : StarEmpty
+                    }
+                    alt="Star"
+                    width={18}
+                    height={18}
+                    className="inline-block"
+                  />
+                </div>
+              ))}
+            </div>
+            <span className="text-sm text-gray-500 ml-2">
+              ({product.noOfReview.toLocaleString()} Reviews)
+            </span>
           </div>
         </div>
       </Link>
     </div>
   );
 };
+
 export default ProductCard;

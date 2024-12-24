@@ -1,5 +1,7 @@
 "use client";
+
 import { sendEmail } from "@/lib/actions/auth-actions";
+import { Loader2, RefreshCw, Send } from "lucide-react";
 import { useEffect, useState } from "react";
 
 export default function SendOTPButton({ email }: { email: string }) {
@@ -8,11 +10,11 @@ export default function SendOTPButton({ email }: { email: string }) {
   const [timer, setTimer] = useState(60);
 
   const handleSendOTP = async () => {
-    setIsLoading(true); // Start loading
+    setIsLoading(true);
     const res = await sendEmail(email);
     setResponse(res);
-    setIsLoading(false); // Stop loading
-    setTimer(60); // Reset timer to 60 seconds
+    setIsLoading(false);
+    setTimer(60);
   };
 
   useEffect(() => {
@@ -21,38 +23,67 @@ export default function SendOTPButton({ email }: { email: string }) {
         setTimer((prevTimer) => prevTimer - 1);
       }, 1000);
 
-      return () => clearInterval(intervalId); // Clear interval on unmount
+      return () => clearInterval(intervalId);
     } else if (timer === 0) {
-      setResponse(false); // Enable resend button
+      setResponse(false);
     }
   }, [response, timer]);
 
   return (
-    <>
-      <div className="flex flex-col w-28 h-8">
-        {isLoading ? (
-          <div className="text-sm font-semibold rounded-[10px] p-2 bg-gray-500 text-white">
-            Sending...
-          </div>
-        ) : !response ? (
-          <button
-            type="button"
-            className="text-gray-700 text-sm font-semibold rounded-[10px] p-2 hover:bg-gray-700 hover:text-white transition-all duration-200 ease-in-out"
-            onClick={handleSendOTP}
-          >
-            {timer === 0 ? "Resend OTP" : "Send OTP"}
-          </button>
-        ) : (
-          <div className="text-sm font-semibold rounded-[10px] p-2 bg-gray-700 text-white">
-            OTP Sent
-          </div>
-        )}
-        {response && timer > 0 && (
-          <span className="text-[12px] font-bold text-gray-500">
-            Resend OTP in {timer} seconds
-          </span>
-        )}
-      </div>
-    </>
+    <div className="flex items-center gap-2">
+      <button
+        type="button"
+        onClick={handleSendOTP}
+        disabled={isLoading || (response && timer > 0)}
+        className={`
+          relative px-4 py-2 text-sm font-medium rounded-lg
+          shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2
+          transition-all duration-200 min-w-[120px]
+          ${
+            response
+              ? "bg-gray-800 text-white"
+              : isLoading
+              ? "bg-gray-100 text-gray-500 cursor-not-allowed"
+              : "border border-gray-300 text-gray-700 hover:bg-gray-50"
+          }
+        `}
+      >
+        <span className="flex items-center justify-center gap-2">
+          {isLoading ? (
+            <>
+              <Loader2 className="w-4 h-4 animate-spin" />
+              <span>Sending</span>
+            </>
+          ) : response ? (
+            <>
+              <Send className="w-4 h-4" />
+              {response && timer > 0 && timer < 59 ? (
+                <span className="text-xs font-medium text-gray-100">
+                  Resend in {timer}s
+                </span>
+              ) : (
+                <span className="text-xs font-medium text-gray-100">
+                  OTP Sent
+                </span>
+              )}
+            </>
+          ) : (
+            <>
+              {timer === 0 ? (
+                <>
+                  <RefreshCw className="w-4 h-4" />
+                  <span>Resend OTP</span>
+                </>
+              ) : (
+                <>
+                  <Send className="w-4 h-4" />
+                  <span>Send OTP</span>
+                </>
+              )}
+            </>
+          )}
+        </span>
+      </button>
+    </div>
   );
 }
