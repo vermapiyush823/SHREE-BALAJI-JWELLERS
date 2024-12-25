@@ -273,7 +273,7 @@ const Navbar = ({ user }: NavbarProps) => {
                         {Object.entries(todaysRates).map(([metal, data]) => (
                           <div
                             key={metal}
-                            className="flex justify-between items-center py-2 border-b border-gray-200 last:border-0"
+                            className="flex text-sm justify-between items-center py-2 border-b border-gray-200 last:border-0"
                           >
                             <div>
                               <span className="font-semibold capitalize">

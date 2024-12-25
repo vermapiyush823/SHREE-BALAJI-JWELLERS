@@ -75,6 +75,9 @@ const config = {
       fontSize: {
         dynamic: "clamp(1.5rem, 5vw, 3.5rem)",
       },
+      aspectRatio: {
+        "4/5": "4 / 5",
+      },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",

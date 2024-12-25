@@ -73,3 +73,17 @@
 .animate-slide-up {
   animation: slideUp 0.8s ease-out forwards;
 }
+
+@layer components {
+  .display-card-skeleton {
+    @apply animate-pulse bg-gray-200;
+  }
+
+  .display-card-hover-overlay {
+    @apply absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100;
+  }
+
+  .display-card-action-button {
+    @apply rounded-full bg-white/90 p-2 shadow-lg transition-all duration-300 hover:bg-white hover:scale-110 active:scale-95;
+  }
+}

@@ -3,71 +3,163 @@ import ArrowIcon from "@/assets/icons/Forward.svg";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams, useSearchParams } from "next/navigation";
-const BreadCrumbs = ({ productName }: any) => {
+
+interface BreadCrumbsProps {
+  productName?: string;
+  className?: string;
+  theme?: "light" | "dark";
+}
+
+interface BreadcrumbLink {
+  name: string;
+  url: string;
+}
+
+const BreadCrumbs = ({
+  productName,
+  className = "",
+  theme = "light",
+}: BreadCrumbsProps) => {
   const params = useParams();
   const searchParams = useSearchParams();
-  const jwellery_type = params.product;
-  const jwellery_subtype = searchParams.get("subType");
-  const pathNames: any = [];
-  if (jwellery_type) {
-    pathNames.push(jwellery_type);
+
+  const jewelryType = (params.product as string) || "";
+  const jewelrySubtype = searchParams.get("subType");
+
+  const pathNames: string[] = [];
+  if (jewelryType) {
+    pathNames.push(jewelryType);
   }
-  if (jwellery_subtype) {
-    pathNames.push(jwellery_subtype);
+  if (jewelrySubtype) {
+    pathNames.push(jewelrySubtype);
   }
   if (productName) {
     pathNames.push(productName);
   }
-  const arrLinks = pathNames.map((path: String, index: number) => {
-    return {
+
+  const breadcrumbLinks: BreadcrumbLink[] = pathNames.map(
+    (path: string, index: number) => ({
       name: path,
       url: `/${pathNames.slice(0, index + 1).join("/")}`,
-    };
-  });
+    })
+  );
+
+  // Theme-based styles
+  const themeStyles = {
+    light: {
+      nav: "bg-white/80 backdrop-blur-sm",
+      text: "text-gray-600",
+      hover: "hover:text-gray-900",
+      active: "text-gray-900",
+      shadow: "shadow-sm",
+      border: "border border-gray-100",
+    },
+    dark: {
+      nav: "bg-gray-800/80 backdrop-blur-sm",
+      text: "text-gray-300",
+      hover: "hover:text-white",
+      active: "text-white",
+      shadow: "shadow-md",
+      border: "border border-gray-700",
+    },
+  };
+
+  const currentTheme = themeStyles[theme];
+
   return (
-    <div className="breadcrumbs p-2 inline-block ml-[25px] mt-1">
-      <ul className="flex gap-1">
+    <nav
+      aria-label="Breadcrumb"
+      className={`
+        ${currentTheme.nav}
+        ${currentTheme.shadow}
+        ${currentTheme.border}
+        rounded-lg
+        py-3 px-4
+        mx-4 my-2
+        transition-all
+        duration-300
+        ${className}
+      `}
+    >
+      <ul className="flex flex-wrap items-center gap-1 text-sm sm:text-base">
         <li>
           <Link
             href="/"
-            className="text-xl hover:font-semibold hover:underline"
+            className={`
+              group
+              flex items-center
+              ${currentTheme.text}
+              ${currentTheme.hover}
+              transition-colors
+              duration-200
+              hover:scale-105
+              transform
+            `}
           >
-            Home
-            <Image
-              src={ArrowIcon}
-              alt="Arrow Icon"
-              className="inline-block"
-              width={25}
-              height={25}
-            />
+            <span className="hover:underline underline-offset-4">Home</span>
+            <div className="mx-2 transition-transform duration-300 group-hover:translate-x-1">
+              <Image
+                src={ArrowIcon}
+                alt="Forward"
+                className="inline-block opacity-60 group-hover:opacity-100"
+                width={16}
+                height={16}
+                priority
+              />
+            </div>
           </Link>
         </li>
-        {arrLinks.map((link: any, index: any) => (
-          <li key={index}>
-            {index !== arrLinks.length - 1 ? (
+
+        {breadcrumbLinks.map((link: BreadcrumbLink, index: number) => (
+          <li key={link.url} className="flex items-center">
+            {index !== breadcrumbLinks.length - 1 ? (
               <Link
                 href={link.url}
-                className="text-xl hover:font-semibold hover:underline capitalize"
-                as={link.url}
+                className={`
+                  group
+                  flex items-center
+                  ${currentTheme.text}
+                  ${currentTheme.hover}
+                  transition-colors
+                  duration-200
+                  hover:scale-105
+                  transform
+                `}
               >
-                {link.name}
-                <Image
-                  src={ArrowIcon}
-                  alt="Arrow Icon"
-                  className="inline-block"
-                  width={25}
-                  height={25}
-                />
+                <span className="capitalize hover:underline underline-offset-4">
+                  {link.name}
+                </span>
+                <div className="mx-2 transition-transform duration-300 group-hover:translate-x-1">
+                  <Image
+                    src={ArrowIcon}
+                    alt="Forward"
+                    className="inline-block opacity-60 group-hover:opacity-100"
+                    width={16}
+                    height={16}
+                  />
+                </div>
               </Link>
             ) : (
-              <span className="text-xl font-semibold cursor-default capitalize">
+              <span
+                className={`
+                  capitalize
+                  font-medium
+                  ${currentTheme.active}
+                  cursor-default
+                  px-1
+                  py-0.5
+                  rounded
+                  bg-opacity-10
+                `}
+                aria-current="page"
+              >
                 {link.name}
               </span>
             )}
           </li>
         ))}
       </ul>
-    </div>
+    </nav>
   );
 };
 

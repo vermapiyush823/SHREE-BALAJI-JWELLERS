@@ -9,7 +9,6 @@ export default async function Layout({
   children: React.ReactNode;
 }) {
   const user = await getAuthToken();
-  console.log(user);
   return (
     <main>
       <Navbar user={user} />
