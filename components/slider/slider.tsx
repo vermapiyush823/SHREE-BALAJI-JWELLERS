@@ -1,3 +1,4 @@
+// Slider.tsx
 "use client";
 
 import {
@@ -16,34 +17,46 @@ import "./slider.css";
 
 const Slider = () => {
   const images = [img1, img2, img3];
-  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true }, [
-    Autoplay({
-      delay: 3000,
-    }),
+  const [emblaRef, emblaApi] = useEmblaCarousel(
+    {
+      loop: true,
+      dragFree: true,
+      skipSnaps: false,
+      containScroll: "trimSnaps",
+    },
+    [
+      Autoplay({
+        delay: 3000,
+        stopOnInteraction: false,
+        stopOnMouseEnter: true,
+      }),
+      Fade(),
+    ]
+  );
 
-    Fade(),
-  ]);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [scrollSnaps, setScrollSnaps] = useState<number[]>([]);
+  const [isPaused, setIsPaused] = useState(false);
 
   const scrollTo = useCallback(
-    (index: any) => {
-      if (emblaApi) emblaApi.scrollTo(index);
-    },
+    (index: number) => emblaApi?.scrollTo(index),
     [emblaApi]
   );
 
   const onSelect = useCallback(() => {
     if (!emblaApi) return;
     setSelectedIndex(emblaApi.selectedScrollSnap());
-  }, [emblaApi, setSelectedIndex]);
+  }, [emblaApi]);
 
   useEffect(() => {
     if (!emblaApi) return;
-    const l = emblaApi.scrollSnapList();
     setScrollSnaps(emblaApi.scrollSnapList());
     emblaApi.on("select", onSelect);
-  }, [emblaApi, setScrollSnaps, onSelect]);
+
+    return () => {
+      emblaApi.off("select", onSelect);
+    };
+  }, [emblaApi, onSelect]);
 
   const scrollPrev = useCallback(() => {
     if (emblaApi) emblaApi.scrollPrev();
@@ -54,38 +67,60 @@ const Slider = () => {
   }, [emblaApi]);
 
   return (
-    <div className="embla" ref={emblaRef}>
-      <div className="embla__container">
-        {images.map((image, index) => (
-          <div className="embla__slide" key={index}>
-            <Image src={image} alt="slider" className="embla__slide__img" />
-          </div>
-        ))}
-      </div>
-      <button
-        title="prev"
-        onClick={scrollPrev}
-        className="prev navigator-icon-parent"
-      >
-        <DoubleArrowLeftIcon className="navigator-icon" />
-      </button>
-      <button
-        title="next"
-        onClick={scrollNext}
-        className="next navigator-icon-parent"
-      >
-        <DoubleArrowRightIcon className="navigator-icon" />
-      </button>
+    <div className="slider-wrapper">
+      <div className="embla" ref={emblaRef}>
+        <div className="embla__container">
+          {images.map((image, index) => (
+            <div className="embla__slide" key={index}>
+              <div className="embla__slide-inner">
+                <Image
+                  src={image}
+                  alt={`Slide ${index + 1}`}
+                  className="embla__slide__img"
+                  priority={index === 0}
+                  fill
+                  sizes="(max-width: 640px) 100vw,
+                         (max-width: 1024px) 100vw,
+                         100vw"
+                />
+              </div>
+            </div>
+          ))}
+        </div>
 
-      <div className="embla__dots">
-        {scrollSnaps.map((_, index) => (
+        <div className="embla__controls">
           <button
-            key={index}
-            className={`normal ${index === selectedIndex ? "active" : ""}`}
-            onClick={() => scrollTo(index)}
-            title="navigate"
-          />
-        ))}
+            type="button"
+            className="embla__nav embla__nav--prev"
+            onClick={scrollPrev}
+            aria-label="Previous slide"
+          >
+            <DoubleArrowLeftIcon className="nav-icon" />
+          </button>
+
+          <div className="embla__dots">
+            {scrollSnaps.map((_, index) => (
+              <button
+                key={index}
+                type="button"
+                className={`embla__dot ${
+                  index === selectedIndex ? "embla__dot--selected" : ""
+                }`}
+                onClick={() => scrollTo(index)}
+                aria-label={`Go to slide ${index + 1}`}
+              />
+            ))}
+          </div>
+
+          <button
+            type="button"
+            className="embla__nav embla__nav--next"
+            onClick={scrollNext}
+            aria-label="Next slide"
+          >
+            <DoubleArrowRightIcon className="nav-icon" />
+          </button>
+        </div>
       </div>
     </div>
   );
