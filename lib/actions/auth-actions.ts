@@ -1,12 +1,8 @@
 "use server";
-import User from "@/database/user.model";
-import bcrypt from "bcrypt";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import nodemailer from "nodemailer";
 import { z } from "zod";
-import { generateAuthToken } from "../generateAuthToken";
-import { connectToDatabase } from "../mongoose";
 
 const config = {
   maxAge: 60 * 60 * 24 * 7, // 1 week
@@ -71,41 +67,44 @@ export async function registerUserAction(prevState: any, formData: FormData) {
       message: "Missing required fields",
     };
   }
-  connectToDatabase();
-  const user = await User.findOne({ email: formData.get("email") });
-  if (user) {
-    return {
-      ...prevState,
-      mismatcherror: "User already exists",
-    };
-  }
+
   if (formData.get("password") !== formData.get("cnpassword")) {
     return {
       ...prevState,
       mismatcherror: "Passwords do not match",
     };
   }
-  const user_details = {
-    email: formData.get("email"),
-    name: formData.get("name"),
-    password: formData.get("password"),
-  };
 
-  const pass = user_details.password;
-  const hashedPassword = await bcrypt.hash(pass ? pass.toString() : "", 10);
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/auth/sign-up`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: formData.get("email"),
+          name: formData.get("name"),
+          password: formData.get("password"),
+        }),
+      }
+    );
 
-  const newUser = new User({
-    email: formData.get("email"),
-    name: formData.get("name"),
-    password: hashedPassword,
-  });
+    const data = await response.json();
 
-  await newUser.save();
+    if (!response.ok) {
+      return {
+        ...prevState,
+        message: data.message,
+      };
+    }
 
-  const userRegistered = await User.findOne({ email: formData.get("email") });
-
-  cookies().set("jwt", generateAuthToken(userRegistered), config);
-  redirect("/");
+    redirect("/");
+  } catch (error) {
+    return {
+      ...prevState,
+      message: "An error occurred during registration",
+    };
+  }
 }
 
 export async function loginUserAction(prevState: any, formData: FormData) {
@@ -121,27 +120,35 @@ export async function loginUserAction(prevState: any, formData: FormData) {
     };
   }
 
-  const user = await User.findOne({ email: validatedFields.data.email });
-  if (!user) {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/auth/sign-in`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: formData.get("email"),
+          password: formData.get("password"),
+        }),
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      return {
+        ...prevState,
+        message: data.message,
+      };
+    }
+
+    redirect("/");
+  } catch (error) {
     return {
       ...prevState,
-      message: "User not found",
+      message: "An error occurred during login",
     };
   }
-
-  const validPass = await bcrypt.compare(
-    validatedFields.data.password,
-    user.password
-  );
-  if (!validPass) {
-    return {
-      ...prevState,
-      message: "Invalid password",
-    };
-  }
-
-  cookies().set("jwt", generateAuthToken(user), config);
-  redirect("/");
 }
 
 export async function logoutUserAction() {

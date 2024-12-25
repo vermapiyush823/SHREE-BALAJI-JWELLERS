@@ -1,14 +1,12 @@
 "use client";
 import Logo from "@/assets/icons/logo.svg";
-import { loginUserAction } from "@/lib/actions/auth-actions";
 import { EyeClosedIcon, EyeOpenIcon } from "@radix-ui/react-icons";
 import { Loader2, Lock, Mail } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { useFormState, useFormStatus } from "react-dom";
-import { ZodErrors } from "../errors/zod";
+import { FormEvent, useState } from "react";
+import { useFormStatus } from "react-dom";
 
 // Submit Button Component with loading state
 function SubmitButton() {
@@ -34,24 +32,45 @@ function SubmitButton() {
 
 export default function SignInForm() {
   const router = useRouter();
-  const INITIAL_STATE = { data: null };
-  const [formState, formAction] = useFormState(loginUserAction, INITIAL_STATE);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
   const [passwordShow, setPasswordShow] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  // Form validation
-  const isEmailValid = (email: string) => {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-  };
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError("");
 
-  const isPasswordValid = (password: string) => {
-    return password.length >= 6;
+    try {
+      const response = await fetch("/api/auth/sign-in", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Something went wrong");
+      }
+
+      // Redirect on successful login
+      router.push("/dashboard");
+      router.refresh();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className=" max-w-lg w-full space-y-8 bg-white p-8 rounded-2xl shadow-lg">
+      <div className="max-w-lg w-full space-y-8 bg-white p-8 rounded-2xl shadow-lg">
         {/* Logo and Header */}
         <div className="flex flex-col items-center">
           <Image
@@ -69,7 +88,7 @@ export default function SignInForm() {
         </div>
 
         {/* Form */}
-        <form className="mt-8 space-y-6" action={formAction} noValidate>
+        <form className="mt-8 space-y-6" onSubmit={handleSubmit} noValidate>
           {/* Email Field */}
           <div className="space-y-2">
             <label
@@ -90,15 +109,11 @@ export default function SignInForm() {
                 onChange={(e) => setEmail(e.target.value)}
                 autoComplete="email"
                 required
-                className={`appearance-none relative block w-full pl-10 pr-3 py-2 border ${
-                  formState?.zodErrors?.email
-                    ? "border-red-300 focus:ring-red-500 focus:border-red-500"
-                    : "border-gray-300 focus:ring-gray-500 focus:border-gray-500"
-                } rounded-lg placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 transition-colors duration-200`}
+                className={`appearance-none relative block w-full pl-10 pr-3 py-2 border rounded-lg placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 transition-colors duration-200`}
                 placeholder="you@example.com"
               />
             </div>
-            <ZodErrors error={formState?.zodErrors?.email} />
+            {/* <ZodErrors error={formState?.zodErrors?.email} /> */}
           </div>
 
           {/* Password Field */}
@@ -121,11 +136,7 @@ export default function SignInForm() {
                 onChange={(e) => setPassword(e.target.value)}
                 autoComplete="current-password"
                 required
-                className={`appearance-none relative block w-full pl-10 pr-10 py-2 border ${
-                  formState?.zodErrors?.password
-                    ? "border-red-300 focus:ring-red-500 focus:border-red-500"
-                    : "border-gray-300 focus:ring-gray-500 focus:border-gray-500"
-                } rounded-lg placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 transition-colors duration-200`}
+                className={`appearance-none relative block w-full pl-10 pr-10 py-2 border rounded-lg placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 transition-colors duration-200`}
                 placeholder="••••••••"
               />
               <button
@@ -140,7 +151,7 @@ export default function SignInForm() {
                 )}
               </button>
             </div>
-            <ZodErrors error={formState?.zodErrors?.password} />
+            {/* <ZodErrors error={formState?.zodErrors?.password} /> */}
           </div>
 
           {/* Remember Me and Forgot Password */}
@@ -170,21 +181,32 @@ export default function SignInForm() {
             </div>
           </div>
 
-          {/* Form Error Message */}
-          {formState?.message && (
+          {/* Error Message */}
+          {error && (
             <div className="rounded-md bg-red-50 p-4">
               <div className="flex">
                 <div className="ml-3">
-                  <h3 className="text-sm font-medium text-red-800">
-                    {formState.message}
-                  </h3>
+                  <h3 className="text-sm font-medium text-red-800">{error}</h3>
                 </div>
               </div>
             </div>
           )}
 
           {/* Submit Button */}
-          <SubmitButton />
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="relative w-full px-4 py-3 text-base font-semibold text-white bg-gray-800 rounded-lg hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed"
+          >
+            {isLoading ? (
+              <span className="flex items-center justify-center gap-2">
+                <Loader2 className="w-4 h-4 animate-spin" />
+                Signing in...
+              </span>
+            ) : (
+              "Sign In"
+            )}
+          </button>
 
           {/* Sign Up Link */}
           <div className="text-center">
