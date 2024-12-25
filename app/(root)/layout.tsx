@@ -12,7 +12,7 @@ export default async function Layout({
   return (
     <main>
       <Navbar user={user} />
-      <section className="pt-[105px] min-h-[90vh]">
+      <section className="pt-[78px] sm:pt-[105px] min-h-[90vh]">
         <div>{children}</div>
       </section>
       <Footer />
