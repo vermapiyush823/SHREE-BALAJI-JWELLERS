@@ -53,7 +53,7 @@ const ReviewContainer = ({ reviews }: ReviewProps) => {
     ? (
         reviews.reduce((acc, rev) => acc + rev.rating, 0) / reviews.length
       ).toFixed(1)
-    : 0;
+    : "0";
 
   // Rating distribution
   const ratingDistribution = reviews.reduce((acc, review) => {
@@ -99,7 +99,7 @@ const ReviewContainer = ({ reviews }: ReviewProps) => {
             <span className="text-5xl font-bold text-gray-900">
               {averageRating}
             </span>
-            <StarRating rating={parseFloat(averageRating)} />
+            <StarRating rating={parseFloat(averageRating as string)} />
             <span className="text-sm text-gray-500 mt-2">
               Based on {reviews.length} reviews
             </span>
