@@ -1,7 +1,6 @@
 "use client";
 import { Check, Loader2 } from "lucide-react";
 import { useState } from "react";
-import { verifyOTP } from "../../lib/actions/auth-actions";
 
 export default function VerifyOTPButton({
   otp,
@@ -23,16 +22,30 @@ export default function VerifyOTPButton({
     try {
       setLoading(true);
       setError(null);
-      const res = await verifyOTP(otp);
-      setResponse(res);
 
-      if (res) {
+      const response = await fetch("/api/auth/verify-otp", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          otp,
+          tokenId: localStorage.getItem("otpTokenId"),
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setResponse(true);
         onVerified();
       } else {
-        setError("Invalid OTP");
+        setError(data.error || "Invalid OTP");
+        setResponse(false);
       }
     } catch (error) {
       setError("Verification failed");
+      setResponse(false);
     } finally {
       setLoading(false);
     }

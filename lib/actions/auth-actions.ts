@@ -158,7 +158,7 @@ export async function logoutUserAction() {
 }
 
 var OTP = "";
-export async function sendEmail(email: string): Promise<boolean> {
+export async function sendEmail(email: string): Promise<string> {
   const otp = Math.floor(100000 + Math.random() * 900000).toString();
   OTP = otp; // Make sure OTP is defined or managed correctly
 
@@ -242,10 +242,10 @@ export async function sendEmail(email: string): Promise<boolean> {
   try {
     const info = await transporter.sendMail(mailOptions);
     console.log("Email sent: " + info.response);
-    return true;
+    return otp;
   } catch (error) {
     console.error("Error sending email:", error);
-    return false;
+    return "";
   }
 }
 

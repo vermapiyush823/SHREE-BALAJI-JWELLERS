@@ -1,6 +1,5 @@
 "use client";
 
-import { sendEmail } from "@/lib/actions/auth-actions";
 import { Loader2, RefreshCw, Send } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -11,10 +10,28 @@ export default function SendOTPButton({ email }: { email: string }) {
 
   const handleSendOTP = async () => {
     setIsLoading(true);
-    const res = await sendEmail(email);
-    setResponse(res);
+    try {
+      const response = await fetch("/api/auth/otp", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        localStorage.setItem("otpTokenId", data.tokenId);
+        setResponse(true);
+        setTimer(60);
+      } else {
+        setResponse(false);
+      }
+    } catch (error) {
+      console.error("Failed to send OTP:", error);
+      setResponse(false);
+    }
     setIsLoading(false);
-    setTimer(60);
   };
 
   useEffect(() => {
