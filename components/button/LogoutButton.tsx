@@ -20,7 +20,7 @@ export default function LogoutButton() {
       className="flex items-center text-gray-600 hover:text-black"
     >
       {}
-      <LogOutIcon size={24} />
+      <LogOutIcon size={20} />
     </button>
   );
 }

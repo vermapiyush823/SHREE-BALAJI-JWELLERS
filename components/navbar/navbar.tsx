@@ -38,7 +38,6 @@ const Navbar = ({ user }: NavbarProps) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [showRates, setShowRates] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  console.log();
   return (
     <div className="fixed top-0 left-0 w-full z-[1000] shadow-lg">
       {/* Main Navbar */}
@@ -215,8 +214,9 @@ const Navbar = ({ user }: NavbarProps) => {
               </li>
               <li className="sm:hidden">
                 {user ? (
-                  <div className="py-2">
+                  <div className="py-2 flex gap-x-2 text-gray-600 hover:text-black">
                     <LogoutButton />
+                    Logout
                   </div>
                 ) : (
                   <Link
