@@ -139,7 +139,9 @@ export default function SignUpForm() {
                   {[...Array(6)].map((_, i) => (
                     <input
                       key={i}
-                      ref={(el) => (inputRefs.current[i] = el)}
+                      ref={(el) => {
+                        inputRefs.current[i] = el;
+                      }}
                       type="text"
                       inputMode="numeric"
                       aria-label={`digit ${i + 1}`}
