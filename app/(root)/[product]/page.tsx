@@ -11,7 +11,7 @@ const JewelleryPage = async () => {
     <>
       <Heading />
       <BreadCrumbs />
-      <div className=" w-[100%] flex-wrap gap-[20px] flex justify-start pl-12 p-6">
+      <div className=" w-fit flex-wrap gap-[20px] flex justify-start  p-6">
         {Products.map((product, index) => (
           <ProductCard
             user={user}

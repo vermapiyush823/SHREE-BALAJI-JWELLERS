@@ -17,7 +17,7 @@ const ProductCard = ({ user, product }: any) => {
 
   return (
     <div
-      className="relative w-[320px] bg-white rounded-xl overflow-hidden"
+      className="relative w-full sm:w-[320px] bg-white rounded-xl overflow-hidden"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       style={{
