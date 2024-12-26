@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
     const productData: ProductData = {
       title: formData.get("title"),
       price: Number(formData.get("price")),
-      image: formData.get("images"),
+      image: JSON.parse(formData.get("images") as string),
       type: formData.get("type"),
       subType: formData.get("subType"),
       weight: Number(formData.get("weight")),

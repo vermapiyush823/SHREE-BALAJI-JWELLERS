@@ -63,7 +63,7 @@ const ProductForm = () => {
           productFormData.append("weight", formData.get("weight") as string);
           productFormData.append("purity", formData.get("purity") as string);
           productFormData.append("gender", formData.get("gender") as string);
-          productFormData.append("images", imageUrls);
+          productFormData.append("images", JSON.stringify(imageUrls));
           // Add stone details if present
           if (formData.get("stone") === "on") {
             productFormData.append("stone", "true");
