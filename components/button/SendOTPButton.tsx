@@ -75,13 +75,11 @@ export default function SendOTPButton({ email }: { email: string }) {
             <>
               <Send className="w-4 h-4" />
               {response && timer > 0 && timer < 59 ? (
-                <span className="text-xs font-medium text-gray-100">
+                <span className="font-medium text-gray-100">
                   Resend in {timer}s
                 </span>
               ) : (
-                <span className="text-xs font-medium text-gray-100">
-                  OTP Sent
-                </span>
+                <span className="font-medium text-gray-100">OTP Sent</span>
               )}
             </>
           ) : (
