@@ -12,7 +12,7 @@ export default async function Layout({
   return (
     <main className="flex flex-col">
       <Navbar user={user} />
-      <section className="mt-16 sm:mt-24">
+      <section className="min-h-[90vh] mt-16 sm:mt-24">
         <div>{children}</div>
       </section>
       <Footer />

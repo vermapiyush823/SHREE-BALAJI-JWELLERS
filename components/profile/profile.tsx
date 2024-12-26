@@ -203,6 +203,7 @@ const Profile = ({ user }: ProfileProps) => {
       setSelectedImage(file);
       setNewImg(URL.createObjectURL(file)); // Preview image
     }
+    console.log(newImg);
   };
   const handleProfilePictureUpdate = async () => {
     if (!selectedImage) return;
