@@ -71,8 +71,8 @@ export default function SignInForm() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center py-6 sm:py-12 px-4 sm:px-6 lg:px-8">
-      <div className="w-full max-w-[420px] space-y-6 sm:space-y-8 bg-white p-4 sm:p-8 rounded-xl sm:rounded-2xl shadow-lg">
+    <div className="min-h-screen flex items-center justify-center py-6 sm:py-6 px-4 sm:px-6 lg:px-8">
+      <div className="w-full max-w-[420px] space-y-6 sm:space-y-8 bg-white p-8 rounded-xl sm:rounded-2xl shadow-lg">
         {/* Logo and Header */}
         <div className="flex flex-col items-center">
           <Image
