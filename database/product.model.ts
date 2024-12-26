@@ -17,7 +17,7 @@ export interface ProductModel extends Document {
   subType: string; // e.g., Ring, Necklace
   weight: number; // in grams
   purity?: number; // e.g., Gold purity percentage (optional)
-  noOfReviews: number; // Count of reviews
+  noOfReview: number; // Count of reviews
   rating: number; // Average rating
   stone?: boolean; // Whether the item has a stone (optional)
   stoneWeight?: number; // Stone weight (optional)
@@ -39,7 +39,7 @@ const ProductSchema = new Schema(
     subType: { type: String, required: true }, // e.g., Ring, Necklace
     weight: { type: Number, required: true }, // e.g., Weight in grams
     purity: { type: Number }, // Purity of the material (optional)
-    noOfReviews: { type: Number, default: 0 }, // Default to 0 reviews
+    noOfReview: { type: Number, default: 0 }, // Default to 0 reviews
     rating: { type: Number, default: 0 }, // Default to 0 rating
     stone: { type: Boolean, default: false }, // Default to no stone
     stoneWeight: { type: Number }, // Weight of stone (optional)
