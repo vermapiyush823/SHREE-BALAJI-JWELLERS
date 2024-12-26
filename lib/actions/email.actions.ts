@@ -1,29 +1,35 @@
 import nodemailer from "nodemailer";
 
-// Function to generate a 6-digit OTP
-export const generateOTP = () => {
+function generateOTP(): string {
   return Math.floor(100000 + Math.random() * 900000).toString();
-};
+}
 
-// Function to send email with OTP
 export async function sendEmail(email: string): Promise<string> {
+  if (!process.env.PASS) {
+    throw new Error("SMTP password environment variable is not configured");
+  }
+
   try {
     const otp = generateOTP();
 
-    // Configure transporter with Gmail SMTP
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: "vermapiyush823@gmail.com", // Sender's email
-        pass: process.env.PASS, // Sender's email password (use environment variable)
+        user: "vermapiyush823@gmail.com",
+        pass: process.env.PASS,
       },
     });
 
-    // Email content
+    // Verify SMTP connection
+    await transporter.verify().catch((error) => {
+      console.error("SMTP Verification failed:", error);
+      throw new Error("Failed to establish SMTP connection");
+    });
+
     const mailOptions = {
-      from: '"Shree Balaji Jewellers" <vermapiyush823@gmail.com>', // Sender name and email
-      to: email, // Recipient email
-      subject: "Your OTP Code for Verification", // Email subject
+      from: '"Shree Balaji Jewellers" <vermapiyush823@gmail.com>',
+      to: email,
+      subject: "Your OTP Code for Verification",
       html: `
         <div style="font-family: Arial, sans-serif; line-height: 1.5; color: #333;">
           <h2 style="color: #d4af37;">Shree Balaji Jewellers</h2>
@@ -39,12 +45,13 @@ export async function sendEmail(email: string): Promise<string> {
       `,
     };
 
-    // Send the email
     const info = await transporter.sendMail(mailOptions);
     console.log("Email sent:", info.response);
     return otp;
   } catch (error) {
     console.error("Error sending email:", error);
-    throw error;
+    throw new Error(
+      error instanceof Error ? error.message : "Failed to send email"
+    );
   }
 }
