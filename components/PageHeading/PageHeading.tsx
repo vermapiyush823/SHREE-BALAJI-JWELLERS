@@ -63,7 +63,7 @@ const PageHeading = () => {
   return (
     <section className="relative w-full overflow-hidden">
       {/* Banner Container */}
-      <div className="relative w-full h-[20vh] sm:h-[30vh] md:h-[40vh] lg:h-[50vh]">
+      <div className="relative w-full h-[25vh] sm:h-[30vh] md:h-[40vh] lg:h-[50vh]">
         {/* Background Image */}
         <Image
           src={bannerConfig.image}
@@ -93,7 +93,7 @@ const PageHeading = () => {
 
             {/* Description */}
             <p
-              className={`hidden sm:block text-sm md:text-base lg:text-lg 
+              className={`sm:block text-sm md:text-base lg:text-lg 
                         ${bannerConfig.textColor} opacity-90
                         animate-slide-up`}
             >
