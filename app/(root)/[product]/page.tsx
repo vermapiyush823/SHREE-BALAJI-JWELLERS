@@ -50,29 +50,57 @@ const JewelleryPage = ({ params }: JewelleryPageProps) => {
     }
   };
 
+  // Combined initialization and fetch effect
   useEffect(() => {
-    fetchProducts();
-    // Get auth token from cookie
-    const token = document.cookie
-      .split("; ")
-      .find((row) => row.startsWith("jwt="))
-      ?.split("=")[1];
-    setUser(token || null);
-  }, []);
+    const initializeAndFetch = async () => {
+      // Initialize metal type filter from URL
+      const metalType =
+        params.product.charAt(0).toUpperCase() + params.product.slice(1);
+      const initialFilters = {
+        price: [],
+        category: [],
+        metalType: [metalType],
+      };
 
+      setFilters(initialFilters);
+
+      // Fetch products with initial filters
+      setLoading(true);
+      try {
+        const queryString = new URLSearchParams({
+          filters: JSON.stringify(initialFilters),
+        }).toString();
+
+        const response = await fetch(`/api/products?${queryString}`);
+        if (!response.ok) {
+          throw new Error("Failed to fetch products");
+        }
+        const data = await response.json();
+        setProducts(data.products);
+
+        // Get auth token
+        const token = document.cookie
+          .split("; ")
+          .find((row) => row.startsWith("jwt="))
+          ?.split("=")[1];
+        setUser(token || null);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "An error occurred");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    initializeAndFetch();
+  }, [params.product]); // Only depend on URL parameter
+
+  // Subsequent filter changes
   useEffect(() => {
+    // Skip the initial render since it's handled by the first effect
+    if (filters.metalType.length === 0) return;
+
     fetchProducts(filters);
   }, [filters]);
-
-  // Initialize filters with metal type from URL
-  useEffect(() => {
-    const metalType =
-      params.product.charAt(0).toUpperCase() + params.product.slice(1);
-    setFilters((prev) => ({
-      ...prev,
-      metalType: [metalType],
-    }));
-  }, [params.product]);
 
   const handleFilterChange = (newFilters: any) => {
     setFilters(newFilters);
