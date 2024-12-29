@@ -17,7 +17,7 @@ const ProductCard = ({ user, product }: any) => {
 
   return (
     <div
-      className="relative w-full sm:w-[320px] bg-white rounded-xl overflow-hidden"
+      className="relative w-[280px] sm:w-[320px] bg-white rounded-xl overflow-hidden"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       style={{
@@ -97,7 +97,9 @@ const ProductCard = ({ user, product }: any) => {
           {/* Price */}
           <div className="flex items-baseline gap-2">
             <span className="text-xl font-bold text-gray-900">
-              ₹{product.price.toLocaleString("en-IN")}
+              {product.stone
+                ? (product.price + product.stonePrice).toLocaleString("en-IN")
+                : product.price.toLocaleString("en-IN")}
             </span>
             {product.price > 1000 && (
               <span className="text-sm text-gray-500 line-through">

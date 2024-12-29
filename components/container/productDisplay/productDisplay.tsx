@@ -1,8 +1,10 @@
 "use client";
 import Heart from "@/assets/icons/Heart.svg";
 import HeartFilled from "@/assets/icons/HeartFilled.svg";
+import StarEmpty from "@/assets/icons/StarEmpty.svg";
+import StarFilled from "@/assets/icons/StarFilled.svg";
+import StarHalfFilled from "@/assets/icons/StarHalf.svg";
 import BISLogo from "@/assets/images/BIS.png";
-import { Star } from "lucide-react"; // Add Lucide React icons
 import Image from "next/image";
 import { useState } from "react";
 import ReviewContainer from "../review/reviewContainer";
@@ -11,14 +13,6 @@ interface Review {
   comment: string;
   rating: number;
   imgUrl: string;
-}
-
-interface Stone {
-  weight: number;
-  purity: number;
-  type: string;
-  price: number;
-  quantity: number;
 }
 
 interface Product {
@@ -30,10 +24,14 @@ interface Product {
   subType: string;
   weight: number;
   purity: number;
-  noOfReviews: number;
+  noOfReview: number;
   rating: number;
   stone: boolean;
-  stoneDetails?: Stone;
+  stoneWeight?: number;
+  stonePrice?: number;
+  stonePurity?: number;
+  stoneType?: string;
+  stoneQuantity?: number;
   gender: "Men" | "Women" | "Unisex";
   reviews: Review[];
 }
@@ -49,10 +47,11 @@ const ProductDisplay = ({ product }: ProductDisplayProps) => {
 
   // Price calculations
   const basePrice = product.price;
-  const stonePrice = product.stoneDetails?.price || 0;
+  const stoneTotalPrice = product.stone ? product.stonePrice ?? 0 : 0;
   const makingCharges = Math.round(basePrice * 0.3);
   const gst = Math.round(basePrice * 0.18);
-  const totalPrice = Math.round(basePrice + makingCharges + gst + stonePrice);
+  const totalPrice =
+    Math.round(basePrice + makingCharges + gst + stoneTotalPrice) * quantity;
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -113,19 +112,29 @@ const ProductDisplay = ({ product }: ProductDisplayProps) => {
           {/* Rating */}
           <div className="mt-2 flex items-center gap-2">
             <div className="flex">
-              {[...Array(5)].map((_, i) => (
-                <Star
-                  key={i}
-                  className={`w-5 h-5 ${
-                    i < product.rating
-                      ? "text-yellow-400 fill-current"
-                      : "text-gray-300"
-                  }`}
-                />
+              {Array.from({ length: 5 }, (_, i) => i + 1).map((star) => (
+                <div
+                  key={star}
+                  className="transform hover:scale-110 transition-transform duration-200"
+                >
+                  <Image
+                    src={
+                      product.rating >= star
+                        ? StarFilled
+                        : product.rating > star - 1
+                        ? StarHalfFilled
+                        : StarEmpty
+                    }
+                    alt="Star"
+                    width={18}
+                    height={18}
+                    className="inline-block"
+                  />
+                </div>
               ))}
             </div>
             <span className="text-sm text-gray-600">
-              ({product.noOfReviews} reviews)
+              ({product.noOfReview} reviews)
             </span>
           </div>
 
@@ -154,7 +163,9 @@ const ProductDisplay = ({ product }: ProductDisplayProps) => {
                 </div>
                 <div className="flex justify-between py-2 border-b">
                   <span className="text-gray-500">Gender</span>
-                  <span className="font-medium">{product.gender}</span>
+                  <span className="font-medium capitalize">
+                    {product.gender}
+                  </span>
                 </div>
               </div>
             </div>
@@ -163,19 +174,17 @@ const ProductDisplay = ({ product }: ProductDisplayProps) => {
             {product.stone && (
               <div className="flex flex-col space-y-2">
                 <h3 className="text-sm font-medium text-gray-900">
-                  {product.stoneDetails?.type} Details
+                  {product.stoneType} Details
                 </h3>
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div className="flex justify-between py-2 border-b">
                     <span className="text-gray-500">Stone Weight</span>
-                    <span className="font-medium">
-                      {product.stoneDetails?.weight}ct
-                    </span>
+                    <span className="font-medium">{product.stoneWeight}ct</span>
                   </div>
                   <div className="flex justify-between py-2 border-b">
                     <span className="text-gray-500">Quantity</span>
                     <span className="font-medium">
-                      {product.stoneDetails?.quantity} pcs
+                      {product.stoneQuantity} pcs
                     </span>
                   </div>
                 </div>
@@ -241,23 +250,23 @@ const ProductDisplay = ({ product }: ProductDisplayProps) => {
             <tbody className="divide-y divide-gray-200">
               <tr className="flex justify-between py-2">
                 <td className="text-gray-500">Base Price</td>
-                <td className="font-medium">₹{basePrice}/-</td>
+                <td className="font-medium">₹{basePrice * quantity}/-</td>
               </tr>
               {product.stone && (
                 <tr className="flex justify-between py-2">
-                  <td className="text-gray-500">
-                    {product.stoneDetails?.type}
+                  <td className="text-gray-500">{product.stoneType} Price</td>
+                  <td className="font-medium">
+                    ₹{stoneTotalPrice * quantity}/-
                   </td>
-                  <td className="font-medium">₹{stonePrice}/-</td>
                 </tr>
               )}
               <tr className="flex justify-between py-2">
                 <td className="text-gray-500">Making Charges</td>
-                <td className="font-medium">₹{makingCharges}/-</td>
+                <td className="font-medium">₹{makingCharges * quantity}/-</td>
               </tr>
               <tr className="flex justify-between py-2">
                 <td className="text-gray-500">GST (18%)</td>
-                <td className="font-medium">₹{gst}/-</td>
+                <td className="font-medium">₹{gst * quantity}/-</td>
               </tr>
               <tr className="flex justify-between py-2 font-bold">
                 <td>Total</td>

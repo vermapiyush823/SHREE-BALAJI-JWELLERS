@@ -1,7 +1,8 @@
-"use server";
+"use client";
 import BreadCrumbs from "@/components/breadcrumb/breadcrumbs";
 import ProductDisplay from "@/components/container/productDisplay/productDisplay";
-import { getProductById } from "@/lib/actions/product.actions";
+import { useEffect, useState } from "react";
+
 interface ProductPageProps {
   params: {
     product: string;
@@ -9,16 +10,36 @@ interface ProductPageProps {
   };
 }
 
-const ProductPage = async ({ params }: ProductPageProps) => {
+const ProductPage = ({ params }: ProductPageProps) => {
   const { id } = params;
-  const product = await getProductById(id);
+  const [product, setProduct] = useState<any>(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`/api/products/${id}`);
+        if (!response.ok) {
+          throw new Error("Failed to fetch product");
+        }
+        const data = await response.json();
+        setProduct(data.product);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchData();
+  }, [id]);
+
   return (
     <>
-      <BreadCrumbs productName={product.title} />
-      <ProductDisplay product={product} />
+      {product && (
+        <>
+          <BreadCrumbs productName={product.title} />
+          <ProductDisplay product={product} />
+        </>
+      )}
     </>
   );
 };
 
 export default ProductPage;
-3;
