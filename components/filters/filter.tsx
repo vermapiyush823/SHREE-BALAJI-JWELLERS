@@ -16,9 +16,10 @@ interface FilterOptions {
 interface FilterProps {
   onFilterChange: (filters: FilterOptions["selected"]) => void;
   currentFilters: FilterOptions["selected"];
+  urlParam?: string;
 }
 
-const Filter = ({ onFilterChange, currentFilters }: FilterProps) => {
+const Filter = ({ onFilterChange, currentFilters, urlParam }: FilterProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [tempFilters, setTempFilters] =
     useState<FilterOptions["selected"]>(currentFilters);
@@ -45,6 +46,11 @@ const Filter = ({ onFilterChange, currentFilters }: FilterProps) => {
     category: "price" | "category" | "metalType",
     value: string
   ) => {
+    // Prevent deselecting the URL param metal type
+    if (category === "metalType" && urlParam) {
+      return;
+    }
+
     const newSelected = {
       ...tempFilters,
       [category]: tempFilters[category].includes(value)
@@ -59,7 +65,9 @@ const Filter = ({ onFilterChange, currentFilters }: FilterProps) => {
     const clearedFilters = {
       price: [],
       category: [],
-      metalType: [],
+      metalType: urlParam
+        ? [urlParam.charAt(0).toUpperCase() + urlParam.slice(1)]
+        : [],
     };
     setTempFilters(clearedFilters);
     onFilterChange(clearedFilters);
@@ -152,11 +160,22 @@ const Filter = ({ onFilterChange, currentFilters }: FilterProps) => {
               <h4 className="font-medium mb-2">Metal Type</h4>
               <div className="space-y-2">
                 {filters.metalType.map((metal) => (
-                  <label key={metal} className="flex items-center space-x-2">
+                  <label
+                    key={metal}
+                    className={`flex items-center space-x-2 ${
+                      urlParam && metal.toLowerCase() !== urlParam.toLowerCase()
+                        ? "opacity-50 cursor-not-allowed"
+                        : ""
+                    }`}
+                  >
                     <input
                       type="checkbox"
                       checked={tempFilters.metalType.includes(metal)}
                       onChange={() => handleFilterSelect("metalType", metal)}
+                      disabled={
+                        !!urlParam &&
+                        metal.toLowerCase() !== urlParam.toLowerCase()
+                      }
                       className="rounded text-black focus:ring-black"
                     />
                     <span className="text-sm">{metal}</span>

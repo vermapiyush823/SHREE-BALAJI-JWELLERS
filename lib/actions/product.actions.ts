@@ -16,7 +16,9 @@ export async function getAllProducts(filters?: FilterOptions) {
       query.subType = { $in: filters.category };
     }
     if (filters.metalType?.length) {
-      query.type = { $in: filters.metalType };
+      query.type = {
+        $in: filters.metalType.map((type) => type.toLowerCase()),
+      };
     }
     if (filters.price?.length) {
       const priceQueries = filters.price.map((range) => {

@@ -5,18 +5,30 @@ import Filter from "@/components/filters/filter";
 import Heading from "@/components/PageHeading/PageHeading";
 import ErrorDisplay from "@/components/shared/ErrorDisplay";
 import LoadingSpinner from "@/components/shared/LoadingSpinner";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
-const JewelleryPage = () => {
+interface JewelleryPageProps {
+  params: {
+    product: string;
+  };
+}
+
+const JewelleryPage = ({ params }: JewelleryPageProps) => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [user, setUser] = useState<string | null>(null);
-  const [filters, setFilters] = useState({
+  const [filters, setFilters] = useState<{
+    price: string[];
+    category: string[];
+    metalType: string[];
+  }>({
     price: [],
     category: [],
     metalType: [],
   });
+  const searchParams = useSearchParams();
 
   const fetchProducts = async (filterParams = filters) => {
     setLoading(true);
@@ -52,18 +64,32 @@ const JewelleryPage = () => {
     fetchProducts(filters);
   }, [filters]);
 
+  // Initialize filters with metal type from URL
+  useEffect(() => {
+    const metalType =
+      params.product.charAt(0).toUpperCase() + params.product.slice(1);
+    setFilters((prev) => ({
+      ...prev,
+      metalType: [metalType],
+    }));
+  }, [params.product]);
+
   const handleFilterChange = (newFilters: any) => {
     setFilters(newFilters);
   };
 
   if (loading) return <LoadingSpinner />;
   if (error) return <ErrorDisplay message={error} />;
-
+  console.log(searchParams);
   return (
     <>
       <Heading />
       <BreadCrumbs />
-      <Filter onFilterChange={handleFilterChange} currentFilters={filters} />
+      <Filter
+        onFilterChange={handleFilterChange}
+        currentFilters={filters}
+        urlParam={params.product}
+      />
       <div className="w-full flex-wrap gap-[20px] flex justify-center sm:justify-start p-6">
         {products.length > 0 ? (
           products.map((product, index) => (
